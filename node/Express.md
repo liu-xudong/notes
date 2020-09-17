@@ -120,11 +120,79 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 // parse application/json
 app.use(bodyParser.json())
+```
 
+使用：
+
+```javascript
 app.use(function (req, res) {
   res.setHeader('Content-Type', 'text/plain')
   res.write('you posted:\n')
+  // 可以通过 req.body 来获取表单 POST 请求体数据
   res.end(JSON.stringify(req.body, null, 2))
 })
 ```
 
+##### 提取路由模块
+
+router.js:
+
+```javascript
+/*
+ * router.js 路由模块
+ * 职责：
+ * 	 处理路由
+ * 	 根据不同的请求方法 + 请求路径设置具体的请求方法
+*/
+
+
+let fs = require('fs')
+
+// Express 提供了一种更好的方式
+// 专门用来包装路由
+
+let express = require('express')
+
+// 1.创建一个路由容器
+let router = express.Router()
+
+// 2.把路由都挂载到 router 路由容器中
+router.get('/students',(req,res)=>{
+	res.render('index.html')
+})
+
+router.get('/students/new',(req,res)=>{
+	res.render('add.html')
+})
+
+router.post('/students/new',(req,res)=>{
+	res.render('index.html')
+})
+
+router.get('/students/edit',(req,res)=>{
+	res.render('index.html')
+})
+
+router.post('/students/edit',(req,res)=>{
+	res.render('index.html')
+})
+
+router.get('/students/delete',(req,res)=>{
+	res.render('index.html')
+})
+
+
+// 3.把 router 导出
+module.exports = router
+```
+
+app.js:
+
+```javascript
+let router = require('./router')
+
+// 挂载路由
+app.use(router)
+```
+
+##### 

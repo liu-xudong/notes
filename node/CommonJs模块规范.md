@@ -271,5 +271,23 @@ Is this OK? (yes) yes
 
 - 建议执行 `npm install 包名` 的时候加上 `--save`  这个选项，目的是用来保存依赖项信息 
 
+##### package.json 和 package-lock.json
 
+npm 5 以前是不会有 `package-lock.json` 文件的。
+
+npm 5 以后才加入的。
+
+当安装包的时候，npm 都会生成或者更新 `package-lock.json` 这个文件。
+
+- npm 5 以后的版本安装包不需要加 `--save` 参数，它会自动保存依赖信息
+- 当安装包的时候，会自动创建或者更新 `package-lock.json` 这个文件
+- `package-lock.json` 这个文件会保存 `node_modules` 中所有包的信息（版本、下载地址）
+  + 这样的话重新 `npm install` 的时候速度就可以提升
+
+- 从文件来看，有一个 `lock` 称之为锁
+  + 这个 `lock` 是用来锁定版本的、
+  + 如果项目依赖了 `1.1.1` 版本
+  + 如果你重新 install 其实会下载最新版本，而不是 `1.1.1`
+  + 我们的目的就是希望可以锁住 `1.1.1` 版本
+  + 所以 `package-lock.json` 这个文件的另一个作用就是锁定版本号，防止自动升级新版
 
