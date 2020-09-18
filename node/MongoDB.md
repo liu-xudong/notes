@@ -311,3 +311,18 @@ Model.update(conditions,doc,[options],[callback])
 Model.findOneAndUpdate([conditions],[update],[options],[callback])
 ```
 
+根据 id 更新一个：
+
+```javascript
+User.findByIdAndUpdate('5f63008e88107fa8dcd0f302',{
+	password: '123'
+},(err,ret) => {
+	if(err){
+		console.log('更新失败')
+	} else {
+		console.log('更新成功')
+		console.log(ret)
+	}
+})
+```
+
