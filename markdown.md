@@ -1,3 +1,5 @@
+# MarkDown
+
 ## markdown语法
 
 ### 基本符号：`* - + >`
@@ -115,7 +117,7 @@
   | :----- | :------: | -----: |
   | 左对齐 | 居中对齐 | 右对齐 |
 
-### markdown在Google上的展示插件
+## markdown在Google上的展示插件
 
 ***Markdown Preview Plus***
 **下载地址：**<https://chrome.google.com/webstore/category/extensions?hl=zh-CN>
