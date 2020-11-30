@@ -1257,3 +1257,1261 @@ export default {
 
 ### 设备
 
+#### 系统信息
+
+- uni.getSystemInfo(OBJECT)
+
+  获取系统信息
+
+  ```js
+  uni.getSystemInfo({
+      success: function(res) {
+          console.log(res.model)	// 手机型号
+          console.log(res.pixelRatio)	// 设备像素比
+          console.log(res.windowWidth)	// 可使用窗口宽度
+          console.log(res.windowHeight)	// 可使用窗口高度
+          console.log(res.language)	// 应用设置的语言
+          console.log(res.version)	// 引擎版本号
+          console.log(res.platform)	// 客户端平台，值域为：'ios'、'android'
+      }
+  })
+  ```
+
+- uni.getSystemInfoSync()
+
+  获取系统信息同步接口（使用同上getSystemInfo）
+
+  ```js
+  try {
+      const res = uni.getSystemInfoSync()
+      console.log(res.model)	// 手机型号
+      console.log(res.pixelRatio)	// 设备像素比
+      console.log(res.windowWidth)	// 可使用窗口宽度
+      console.log(res.windowHeight)	// 可使用窗口高度
+      console.log(res.language)	// 应用设置的语言
+      console.log(res.version)	// 引擎版本号
+      console.log(res.platform)	// 客户端平台，值域为：'ios'、'android'
+  } catch(e) {
+      // error
+  }
+  ```
+
+- uni.canIUser(String)
+
+  判断应用的 API ，回调，参数，组件等是否在当前版本可用。
+
+  ```js
+  uni.canIUse('getSystemInfoSync.return.screenWidth')
+  uni.canIUse('getSystemInfo.success.screenWidth')
+  uni.canIUse('showToast.object.image')
+  uni.canIUse('requset.object.method.GET')
+  
+  uni.canIUse('live-player')
+  uni.canIUse('text.selectable')
+  uni.canIUse('button.open-type.contact')
+  ```
+
+具体详见： [https://uniapp.dcloud.io/api/system/info?id=getsysteminfo](https://uniapp.dcloud.io/api/system/info?id=getsysteminfo)
+
+#### 内存
+
+uni.onMemoryWarning(CALLBACK)
+
+监听内存不足警告事件
+
+```js
+uni.onMemoryWarning(function() {
+    console.log('onMemoryWarningReceive')
+})
+```
+
+具体详见： [https://uniapp.dcloud.io/api/system/memory](https://uniapp.dcloud.io/api/system/memory)
+
+#### 网络状态
+
+- uni.getNetworkType(OBJECT)
+
+  获取网络类型
+
+  ```js
+  uni.getNetworkType({
+      success: function(res) {
+          console.log(res.networkType)
+      }
+  })
+  ```
+
+- uni.onNetworkStatusChange(CALLBACK)
+
+  监听网络状态变化。
+
+  ```js
+  uni.onNetworkStatusChange(function(res) {
+      console.log(res.isConnected)
+      console.log(res.networkType)
+  })
+  ```
+
+具体详见： [https://uniapp.dcloud.io/api/system/network](https://uniapp.dcloud.io/api/system/network)
+
+#### 系统主题
+
+uni.onThemeChange(CALLBACK)
+
+监听系统主题状态变化。
+
+```js
+uni.onThemeChange(function(res) {
+    console.log(res.theme)
+})
+```
+
+具体详见： [https://uniapp.dcloud.io/api/system/theme](https://uniapp.dcloud.io/api/system/theme)
+
+#### 加速度计
+
+- uni.onAccelerometerChange(CALLBACK)
+
+  监听加速度数据，频率： 5次/秒，接口调用后自动开始监听，可使用 `uni.offAccelerometer` 取消监听。
+
+  ```js
+  uni.onAccelerometerChange(function(res) {
+      console.log(res.x)
+      console.log(res.y)
+      console.log(res.z)
+  })
+  ```
+
+- uni.offAccelerometerChange(CALLBACK)
+
+  取消监听加速度数据。
+
+- uni.startAccelerrometer(OBJECT)
+
+  开始监听加速度数据。
+
+  ```js
+  uni.startAccelerometer()
+  ```
+
+- uni.stopAceelerometer(OBJECT)
+
+  停止监听加速度数据。
+
+  ```js
+  uni.stopAccelerometer()
+  ```
+
+具体详见 ： [https://uniapp.dcloud.io/api/system/accelerometer?id=onaccelerometerchange](https://uniapp.dcloud.io/api/system/accelerometer?id=onaccelerometerchange)
+
+#### 罗盘
+
+- uni.onCompassChange(CALLBACK)
+
+  监听罗盘数据，频率： 5次/秒，接口调用后会自动开始监听，可使用 `uni.offCompassChange` 取消监听。
+
+  ```js
+  uni.onCompassChange(function(res) {
+      console.log(res.direction)
+  })
+  ```
+
+- uni.offCompassChange(CALLBACK)
+
+  取消监听罗盘数据。
+
+- uni.startCompass(OBJECT)
+
+  开始监听罗盘数据。
+
+  ```js
+  uni.startCompass()
+  ```
+
+- uni.stopCompass(OBJECT)
+
+  停止监听罗盘数据。
+
+  ```js
+  uni.stopCompass()
+  ```
+
+具体详见: [https://uniapp.dcloud.io/api/system/compass?id=oncompasschange](https://uniapp.dcloud.io/api/system/compass?id=oncompasschange)
+
+#### 陀螺仪
+
+- uni.onGyroscopeChange(CALLBACK)
+
+  监听陀螺仪数据变化事件。
+
+- uni.startGyroscope(OBJECT)
+
+  开始监听陀螺仪数据。
+
+- uni.stopGyroscope(OBJECT)
+
+  停止监听陀螺仪数据。
+
+```vue
+<template>
+	<view>
+    	<button @click="start">开始监听陀螺仪变化</button>
+        <button @click="stop">停止监听陀螺仪变化</button>
+    </view>
+</template>
+```
+
+```js
+export default {
+    methods: {
+        start() {
+            uni.onGyroscopeChange((res) => {
+                console.log('gyroData.rotationRate.x = ' + res.x)
+                console.log('gyroData.rotationRate.y = ' + res.y)
+                console.log('gyroData.rotationRate.z = ' + res.z)
+            })
+            uni.startGyroscope({
+                interval: 'normal',
+                success() {
+                    console.log('success')
+                },
+                fail() {
+                    console.log('fail')
+                }
+            })
+        },
+        stop() {
+            uni.stopGyroscope({
+                success() {
+                    console.log('stop success!')
+                },
+                fail() {
+                    console.log('stop fail!')
+                }
+            })
+        }
+    }
+}
+```
+
+具体详见： [https://uniapp.dcloud.io/api/system/gyroscope?id=ongyroscopechange](https://uniapp.dcloud.io/api/system/gyroscope?id=ongyroscopechange)
+
+#### 拨打电话
+
+uni.makePhoneCall(OBJECT)
+
+拨打电话。
+
+```js
+uni.makePhoneCall({
+    phoneNumber: '114'	// 示例
+})
+```
+
+具体详见： [https://uniapp.dcloud.io/api/system/phone](https://uniapp.dcloud.io/api/system/phone)
+
+#### 扫码
+
+调起客户端扫码界面，扫码成功后返回对应的结果。
+
+```js
+// 允许从相机和相册扫码
+uni.scanCode({
+    success: function(res) {
+        console.log('条码类型' + res.scanType)
+        console.log('条码内容' + res.result)
+    }
+})
+
+// 只允许通过相机扫码
+uni.scanCode({
+    onlyFromCamera: true,
+    success:function(res) {
+        console.log('条码类型' + res.scanType)
+        console.log('条码内容' + res.result)
+    }
+})
+
+// 调起条码扫描
+uni.scanCode({
+    scanType: ['barCode'],
+    success: function(res) {
+        console.log('条码类型' + res.scanType)
+        console.log('条码内容' + res.result)
+    }
+})
+```
+
+具体详见： [https://uniapp.dcloud.io/api/system/barcode?id=scancode](https://uniapp.dcloud.io/api/system/barcode?id=scancode)
+
+#### 剪贴板
+
+- uni.setClipboardData(OBJECT)
+
+  设置系统剪贴板的内容。
+
+  ```js
+  uni.setClipboardData({
+      data: 'hello',
+      success: function() {
+          console.log('success')
+      }
+  })
+  ```
+
+- uni.getClipboardData(OBJECT)
+
+  获取系统剪贴板内容。
+
+  ```js
+  uni.getClipboardData({
+      success:function(res) {
+          console.log(res.data)
+      }
+  })
+  ```
+
+具体详见： [https://uniapp.dcloud.io/api/system/clipboard?id=setclipboarddata](https://uniapp.dcloud.io/api/system/clipboard?id=setclipboarddata)
+
+#### 屏幕
+
+- uni.setScreenBrightness(OBJECT)
+
+  设置屏幕亮度
+
+  ```js
+  uni.setScreenBrightness({
+      value: 0.5,
+      success: function() {
+          console.log('success')
+      }
+  })
+  ```
+
+- uni.getScreenBrightness(OBJECT)
+
+  获取屏幕宽度
+
+  ```js
+  uni.getScreenBrightness({
+      success: function(res) {
+          console.log('屏幕亮度值' + res.value)
+      }
+  })
+  ```
+
+- uni.setKeepScreenOn(OBJECT)
+
+  设置是否保持常亮状态。仅在当前应用生效，离开应用后设置失效。
+
+  ```js
+  // 保持屏幕常亮
+  uni.setKeepScreenOn({
+      keepScreenOn: true
+  })
+  ```
+
+具体详见： [https://uniapp.dcloud.io/api/system/brightness?id=setscreenbrightness](https://uniapp.dcloud.io/api/system/brightness?id=setscreenbrightness)
+
+#### 用户截屏事件
+
+uni.onUserCaptureScreen(CALLBACK)
+
+监听用户主动截屏事件，用户使用系统截屏按键截屏时触发此事件。
+
+```js
+uni.onUserCaptureScreen(function() {
+    console.log('用户截屏了')
+})
+```
+
+#### 振动
+
+- uni.vibrate(OBJECT)
+
+  使手机发生振动。
+
+  ```js
+  uni.vibrate({
+      success: function() {
+          console.log('success')
+      }
+  })
+  ```
+
+- uni.vibrateLong(OBJECT)
+
+  使手机发生较长时间的振动（400ms）。
+
+  ```js
+  uni.vibrateLong({
+      success: function() {
+          console.log('success')
+      }
+  })
+  ```
+
+- uni.vibrateShort(OBJECT)
+
+  是手机发生较短时间的振动（15ms）。
+
+  ```js
+  uni.vibrateShort({
+      success: function() {
+          console.log('success')
+      }
+  })
+  ```
+
+具体详见： [https://uniapp.dcloud.io/api/system/vibrate?id=vibrate](https://uniapp.dcloud.io/api/system/vibrate?id=vibrate)
+
+#### 手机联系人
+
+uni.addPhoneContact(OBJECT)
+
+调用后，用户可以选择该表单以“新增联系人”或“添加到已有联系人”的方式，写入手机系统通讯录，完成手机通讯录联系人和联系方式的增加。
+
+```js
+uni.addPhoneContact({
+    nickName: '昵称',
+    lastName: '姓',
+    firstName: '名',
+    remark: '备注',
+    mobilePhoneNumber: '114',
+    success: function() {
+        console.log('success')
+    },
+    fail: function() {
+        console.log('fail')
+    }
+})
+```
+
+具体详见： [https://uniapp.dcloud.io/api/system/contact?id=addphonecontact](https://uniapp.dcloud.io/api/system/contact?id=addphonecontact)
+
+#### 蓝牙
+
+- uni.openBluetoothAdapter(OBJECT)
+
+  初始化蓝牙模块
+
+  ```js
+  uni.openBluetoothAdapter({
+      success(res) {
+          console.log(res)
+      }
+  })
+  ```
+
+- uni.startBluetoothDebicesDiscovery(OBJECT)
+
+  开始搜寻附近的蓝牙外围设备。
+
+  ```js
+  // 以微信硬件平台的蓝牙智能灯为例，主服务的 UUID 是 FEE7. 传入这个参数，只搜索主服务 UUID 为 FEE7 的设备
+  uni.startBluetoothDevicesDiscobery({
+      services: ['FEE7'],
+      success(res) {
+          console.log(res)
+      }
+  })
+  ```
+
+- uni.onBluetoothDevicesFound(CALLBACK)
+
+  监听寻找到新设备的事件
+
+  ```js
+  // ArrayBuffer 转 16 进度字符串示例
+  function ab2hex(buffer) {
+      const hexArr = Array.prototype.map.call(
+      	new Uint8Array(buffer),
+          function(bit) {
+              return('00' + bit.toString(16)).slice(-2)
+          }
+      )
+      return hexArr.join('')
+  }
+  uni.onBluetoothDeviceFound(function(devices) {
+      console.log('new device list has founded')
+      console.dir(devices)
+      console.log(ab2hex(devices[0].advertisData))
+  })
+  ```
+
+- uni.stopBluetoothDevicesDiscovery(OBJECT)
+
+  停止搜索附近的蓝牙外围设备。若已经找到需要的蓝牙设备并不需要继续搜索时，建议调用该接口停止蓝牙搜索。
+
+  ```js
+  uni.stopBluetoothDevicesDiscovery({
+      success(res) {
+          console.log(res)
+      }
+  })
+  ```
+
+- uni.onBluetoothAdapterStateChange(CALLBACK)
+
+  监听蓝牙适配器状态变化事件
+
+  ```js
+  uni.onBluetoothAdapterStateChange(function(res) {
+      console.log('adapterState changed,now is', res)
+  })
+  ```
+
+- uni.getConnectedBluetoothDevices(OBJECT)
+
+  根据 uuid 获取处于已连接状态的设备
+
+  ```js
+  uni.getConnecteBluetoothDevices({
+      success(res) {
+          console.log(res)
+      }
+  })
+  ```
+
+- uni.getBluetoothDevices(OBJECT)
+
+  获取在蓝牙模块生效期间所有已发现的蓝牙设备。包括已经和本机处于连接状态的设备。
+
+  ```js
+  // ArrayBuffer转16进度字符串示例
+  function ab2hex(buffer) {
+      const hexArr = Array.prototype.map.call(
+      	new Uint8Array(buffer)
+          function(bit) {
+          	return ('00' + bit.toString(16)).slice(-2)
+      	}
+      )
+      return hexArr.join('')
+  }
+  uni.getBluetoothDevices({
+      success(res) {
+          console.log(res)
+          if(res.devices[0]) {
+              console.log(ab2hex(res.devices[0].advertisData))
+          }
+      }
+  })
+  ```
+
+- uni.getBluetoothDdapterState(OBJECT)
+
+  获取本机蓝牙适配器状态。
+
+  ```js
+  uni.getBluetoothAdapterState({
+      success(res) {
+          console.log(res)
+      }
+  })
+  ```
+
+- uni.closeBluetoothAdapter(OBJECT)
+
+  关闭蓝牙模块。调用该方法将断开所有已建立的连接并释放系统资源。建议在使用蓝牙流程后，与 `uni.openBluetoothAdapter` 成对调用。
+
+  ```js
+  uni.closeBluetoothAdapter({
+      success(res) {
+          console.log(res)
+      }
+  })
+  ```
+
+具体详见： [https://uniapp.dcloud.io/api/system/bluetooth](https://uniapp.dcloud.io/api/system/bluetooth)
+
+#### 低功耗蓝牙
+
+- uni.setBLEMTU(OBJECT)
+
+  设置蓝牙最大传输单元。需在 uni.createBLEConnection 调用成功后调用， mtu 设置范围 (22,512)。
+
+- uni.writeBLECharacteristicValue(OBJECT)
+
+  向低功耗蓝牙设备特征值中写入二进制数据。
+
+  ```js
+  // 向蓝牙设备发送一个 0x00 的16进制数据
+  const buffer = new ArrayBuffer(1)
+  const dataView = new DataView(buffer)
+  dataView.setUint8(0,0)
+  uni.writeBLECHaracteristicValue({
+      // 这里的 deviceId 需要在 getBluetoothDevices 或 onBluetoothDeviceFound 接口中获取
+      deviceId,
+      // 这里的 serviceId 需要在 getBLEDeviceServices 接口中获取
+      serviceId,
+      // 这里的 characteristicId 需要在 getBLEDeviceCharacteristics 接口中获取
+      characteristicId,
+      // 这里的 value 是 ArrayBuffer 类型
+      value: buffer,
+      success(res) {
+          console.log('writeBLECHaracteristicValue success', res.errMsg)
+      }
+  })
+  ```
+
+- uni.readBLECharacteristicValue(OBJECT)
+
+  读取低功耗蓝牙设备的特征值的二进制数据值。注意：必须设备的特征值支持 read 才可以成功调用。
+
+  ```js
+  // 必须在这里的回调才能获取
+  uni.onBLECHaracteristicValueChange(function(characteristic) {
+      console.log('characteristic value comed:', characteristic)
+  })
+  uni.readBLECHaracteristicValue({
+      // 这里的 deviceId 需要已经通过 createBLEConnection 与对应设备建立连接
+      deviceId,
+      // 这里的 serviceId 需要在 getBLEDeviceServices 接口中获取
+      serviceId,
+      // 这里的 characteristicId 需要在 getBLEDeviceCharacteristics 接口中获取
+      characteristicId,
+      success(res) {
+          console.log('readBLECHaracteristicValue', res.errCode)
+      }
+  })
+  ```
+
+- uni.onBLEConnectionStateChange(CALLBACK)
+
+  监听低功耗蓝牙连接状态的改变事件。包括开发者主动连接或断开连接，设备丢失，连接异常断开等等。
+
+  ```js
+  uni.onBLEConnectionStateChange(function(res) {
+      // 该方法回调中可以用于处理连接意外断开等异常情况
+      console.log(`device ${res.deviceId} state has changed, connected: ${res.connected}`)
+  })
+  ```
+
+- uni.onBLECharacteristicValueChange(CALLBACK)
+
+  监听低功耗蓝牙设备的特征值变化事件。必须先启用 `notifyBLECharacteristicValueChange` 接口才能接受到设备推送的 notification。
+
+  ```js
+  // ArrayBuffer 转 16 进度字符串示例
+  function ab2hex(buffer) {
+      const hexArr = Array.prototype.map.call(
+      	new Uint8Array(buffer),
+          function(bit) {
+              return ('00' + bit.toString(16)).slice(-2)
+          }
+      )
+      return hexArr.join('')
+  }
+  uni.onBLECharacteristicValueChange(function(res) {
+      console.log(`characteristic ${res.characteristicId} has changed,now is ${res.value}`)
+      console.log(ab2hex(res.value))
+  })
+  ```
+
+- uni.notifyBLECharacteristicValueChange(OBJECT)
+
+  启用低功耗蓝牙设备特征值变化时的 notify 功能，订阅特征值。注意：必须设备的特征值支持 notify 或者 indicate 才可以成功调用。另外，必须先启用 `notifyBLECharacteristicValueChange` 才能监听到设备 `characteristicValueChange` 事件。
+
+  ```js
+  uni.notifyBLECharacteristicValueChange({
+      state: true,	// 启用 notify 功能
+      // 这里的 deviceId 需要已经通过 createBLEConnection 与对应设备建立连接
+      deviceId,
+      // 这里的 serviceId 需要在 getBLEDeviceServices 接口中获取
+      serviceId,
+      // 这里的 characteristicId 需要在 getBLEDeviceCharacteristics 接口中获取
+      characteristicId，
+      success(res) {
+          console.log('notifyBLECharacteristicValueChange success', res.errMsg)
+      }
+  })
+  ```
+
+- uni.getBLEDeviceServices(OBJECT)
+
+  获取蓝牙设备所有服务(service)。
+
+  ```js
+  uni.getBLEDebiceServices({
+      // 这里的 deviceId 需要已经通过 createBLEConnection 与对应设备建立连接
+      deviceId,
+      success(res) {
+          console.log('device services:',res.services)
+      }
+  })
+  ```
+
+- uni.getBLEDeviceRSSI(OBJECT)
+
+  获取蓝牙设备信号强度
+
+- uni.getBLEDeviceCharacteristics(OBJECT)
+
+  获取蓝牙设备某个服务中所有特征值(characteristic)。
+
+  ```js
+  uni.getBLEDebiceCharacteristics({
+      // 这里的 deviceId 需要已经通过 createBLEConnection 与对应设备建立连接
+      deviceId,
+      // 这里的 serviceId 需要在 getBLEDeviceServices 接口中获取
+      serviceId,
+      success(res) {
+          console.log('device getBLEDebiceCharacteristics:', res.characteristics)
+      }
+  })
+  ```
+
+- uni.createBLEConnection(OBJECT)
+
+  连接低功耗蓝牙设备。
+
+  ```js
+  uni.createBLEConnection({
+      // 这里的 deviceId 需要已经通过 createBLEConnection 与对应设备建立联系
+      deviceId,
+      success(res) {
+          console.log(res)
+      }
+  })
+  ```
+
+- uni.closeBLEConnection(OBJECT)
+
+  断开与低功耗蓝牙设备的连接。
+
+  ```js
+  uni.closeBLEConnection({
+      deviceId,
+      success(res) {
+          console.log(res)
+      }
+  })
+  ```
+
+具体详见： [https://uniapp.dcloud.io/api/system/ble?id=setblemtu](https://uniapp.dcloud.io/api/system/ble?id=setblemtu)
+
+#### iBeacon
+
+- uni.onBeaconServiceChange(CALLBACK)
+
+  监听 iBeacon 服务状态变化事件
+
+- uni.onBeaconUpdata(CALLBACK)
+
+  监听 iBeacon 设备更新事件
+
+- uni.getBeacons(OBJECT)
+
+  获取所有已搜索到的 iBeacon 设备
+
+- uni.startBeaconDiscovery(OBJECT)
+
+  开始搜索附近的 iBeacon 设备
+
+  ```js
+  uni.startBeaconDiscovery({
+      success(res) { }
+  })
+  ```
+
+- uni.stopBeaconDiscovery(OBJECT)
+
+  停止搜索附近的 iBeacon 设备
+
+- IBeaconInfo
+
+- 注意事项
+
+具体详见： [https://uniapp.dcloud.io/api/system/ibeacon?id=onbeaconservicechange](https://uniapp.dcloud.io/api/system/ibeacon?id=onbeaconservicechange)
+
+#### Wi-Fi
+
+仅微信小程序平台、App平台、字节跳动小程序支持，各平台开发方式暂未统一，使用时需注意用[条件编译](https://uniapp.dcloud.io/platform)调用不同平台的代码。
+
+微信小程序平台实现参考：[规范详情](https://developers.weixin.qq.com/miniprogram/dev/api/wx.startWifi.html)
+
+字节跳动小程序的wifi API参考：[规范详情](https://developer.toutiao.com/dev/cn/mini-app/develop/api/device/wi-fi/getconnectedwifi)
+
+App 平台实现参考
+
+**安卓：**
+
+- [获取WIFI列表](https://ask.dcloud.net.cn/question/12113)
+
+**ios：**
+
+- [打开ios的WIFI设置页面](https://ask.dcloud.net.cn/question/7797)
+
+#### 电量
+
+电量API暂未统一，需分平台条件编译编写。
+
+- 微信小程序平台：[规范详情](https://developers.weixin.qq.com/miniprogram/dev/api/wx.getBatteryInfoSync.html)
+- 百度小程序平台：[规范详情](https://smartprogram.baidu.com/docs/develop/api/device_battery/#swan-getBatteryInfo/)
+- 支付宝小程序平台：[规范详情](https://docs.alipay.com/mini/api/nrnziy)
+- QQ小程序平台：[规范详情](https://q.qq.com/wiki/develop/miniprogram/API/equipment/ibeacon_battery.html)
+- App平台：使用 Native.js，[参考](https://ask.dcloud.net.cn/article/992)
+- H5平台：使用 navigator.battery API
+
+#### NFC
+
+仅微信小程序平台、App平台支持，各平台开发方式暂未统一，使用时需注意用[条件编译](https://uniapp.dcloud.io/platform)调用不同平台的代码。
+
+- 微信小程序平台实现参考：[规范详情](https://developers.weixin.qq.com/miniprogram/dev/api/wx.startHCE.html)
+- App 平台通过Native.js实现，**安卓：**[NFC数据读取](https://ask.dcloud.net.cn/question/6726)
+
+#### 设备方向
+
+[监听设备方向变化](https://uniapp.dcloud.io/api/system/deviceMotion?id=监听设备方向变化)
+
+仅微信小程序平台支持，[规范详情](https://developers.weixin.qq.com/miniprogram/dev/api/device/motion/wx.startDeviceMotionListening.html)
+
+在App平台，也可以通过监听窗体大小变化onResize来实现此类需求。[详见](https://uniapp.dcloud.io/collocation/frame/lifecycle?id=页面生命周期)
+
+#### 生物认证
+
+- 生物认证说明
+
+  生物认证，又称活体检测。它包含指纹识别、人脸识别两部分。即通过人体身体特征来进行身份认证识别。
+
+- uni.startSoterAuthentication(OBJECT)
+
+  开始 SOTER 生物认证。
+
+- uni.checkIsSupportSoterAuthentication(OBJECT)
+
+  获取本机支持的 SOTER 生物认证方式
+
+- uni.checkIsSoterEnrolledInDevice(OBJECT)
+
+  获取设备内是否录入如指纹等生物信息的接口
+
+```vue
+<template>
+	<view class="content">
+    	<button type="primary" @click="checkIsSupportSoterAuthentication">检查支持的认证方式</button>
+        <button type="primary" @click="checkIsSoterEnrolledInDeviceFingerPrint">检查是否录入指纹</button>
+        <button type="primary" @click="checkIsSoterEnrolledInDeviceFaceID">检查是否录入FaceID</button>
+        <button type="primary" @click="startSoterAuthenticationFingerPrint">开始指纹认证</button>
+        <button type="primary" @click="startSoterAuthenticationFaceID">开始FaceID认证</button>
+    </view>
+</template>
+
+<script>
+	export default {
+        data() {
+            return{}
+        },
+        onLoad() {
+            
+        },
+        methods: {
+            checkIsSupportSoterAuthentication() {
+                uni.checkIsSupportSoterAuthentication({
+                    success(res) {
+                        console.log(res)
+                    },
+                    fail(err) {
+                        console.log(err)
+                    },
+                    complete(res) {
+                        console.log(res)
+                    }
+                })
+            },
+            checkIsSoterEnrolledInDeviceFingerPrint() {
+                uni.checkIsSoterEnrolledInDevice({
+                    checkAuthMode: 'fingerPrint',
+                    success(res) {
+                        console.log(res)
+                    },
+                    fail(err) {
+                        console.log(err)
+                    },
+                    complete(res) {
+                        console.log(res)
+                    }
+                })
+            },
+            checkIsSoterEnrolledInDeviceFaceID() {
+                uni.checkIsSoterEnrolledInDevice({
+                    checkAuthMode: 'facial',
+                    success(res) {
+                        console.log(res)
+                    },
+                    fail(err) {
+                        console.log(err)
+                    },
+                    complete(res) {
+                        console.log(res)
+                    }
+                })
+            },
+            startSoterAuthenticationFingerPrint() {
+                uni.startSoterAuthentication({
+                    requestAuthModes:['fingerPrint'],
+                    challenge: '123456',
+                    authContent: '请用指纹解锁',
+                    success(res) {
+                        console.log(res)
+                    },
+                    fail(err) {
+                        console.log(err)
+                    },
+                    complete(res) {
+                        console.log(res)
+                    }
+                })
+            },
+            startSoterAuthenticationFaceID() {
+                uni.startSoterAuthentication({
+                    requestAuthModes: ['facial'],
+                    challenge: '123456',
+                    authContent: '请用FaceID解锁'，
+                    success(res) {
+                        console.log(res)
+                    },
+                    fail(err) {
+                        console.log(err)
+                    },
+                    complete(res) {
+                        console.log(res)
+                    }
+                })
+            }
+        }
+    }
+</script>
+```
+
+具体详见： [https://uniapp.dcloud.io/api/system/authentication?id=%e7%94%9f%e7%89%a9%e8%ae%a4%e8%af%81%e8%af%b4%e6%98%8e](https://uniapp.dcloud.io/api/system/authentication?id=%e7%94%9f%e7%89%a9%e8%ae%a4%e8%af%81%e8%af%b4%e6%98%8e)
+
+### Worker
+
+目前需分平台编写
+
+- 微信小程序：[规范详情](https://developers.weixin.qq.com/miniprogram/dev/api/worker/wx.createWorker.html)
+- 字节跳动小程序：[规范详情](https://developer.toutiao.com/docs/game/worker/tt.createWorker.html)
+- QQ小程序：[规范详情](https://q.qq.com/wiki/develop/miniprogram/API/worker/worker.html)
+- H5：标准H5的worker仍然可以使用
+- App：App的js是在独立的jscore运行的，如果需要在另一个线程运行js，可以使用web-view组件或renderjs，这样的js运行在webview里，和jscore里的js是两个线程。但注意多个webview之间的js是一个进程，使用webview里的js时注意会影响视图层的渲染。
+
+### 键盘
+
+#### uni.hideKeyboard
+
+隐藏软键盘
+
+#### uni.onKeyboardHeightChange(CALLBACK)
+
+监听键盘高度变化
+
+```js
+uni.onKeyboardHeightChange(res => {
+    console.log(res.height)
+})
+```
+
+具体详见： [https://uniapp.dcloud.io/api/key?id=hidekeyboard](https://uniapp.dcloud.io/api/key?id=hidekeyboard)
+
+### 界面
+
+#### 交互反馈
+
+- uni.showToast(OBJECT)
+
+  显示消息提示
+
+  ```js
+  uni.showToast({
+      title: '标题',
+      duration: 2000
+  })
+  ```
+
+- uni.hideToast()
+
+  隐藏消息提示框
+
+  ```js
+  uni.hideToast()
+  ```
+
+- uni.shwoLoading(OBJECT)
+
+  显示 loading 提示框，需主动调用 `uni.hideLoading` 才能关闭提示框。
+
+  ```js
+  uni.showLoading({
+      title: '加载中'
+  })
+  ```
+
+- uni.hideLoading()
+
+  隐藏 loading 提示框
+
+  ```js
+  uni.showLoding({
+      title: '加载中'
+  })
+  
+  setTimeout(function() {
+      uni.hideLoading()
+  },2000)
+  ```
+
+- uni.showModal(OBJECT)
+
+  显示模态弹窗，类似于标准 html 的消息框： alert、confirm
+
+  ```js
+  uni.showModal({
+      title: '提示',
+      content: '这是一个模态弹窗'，
+      success: function(res) {
+      	if(res.confirm) {
+              console.log('用户点击确定')
+          } else if(res.cancel) {
+              console.log('用户点击取消')
+          }
+  	}
+  })
+  ```
+
+- uni.showActionSheet(OBJECT)
+
+  显示操作菜单
+
+  ```js
+  uni.showActionSheet({
+      itemList: ['A','B','C'],
+      success: function(res) {
+          console.log('选中了第' + (res.tapIndex + 1) + '个按钮')
+      }，
+      fail: function(res) {
+          console.log(res.errMsg)
+      }
+  })
+  ```
+
+具体详见： [https://uniapp.dcloud.io/api/ui/prompt?id=showtoast](https://uniapp.dcloud.io/api/ui/prompt?id=showtoast)
+
+#### 设置导航条
+
+- uni.setNavigationBarTitle(OBJECT)
+
+  动态设置当前页面的标题
+
+  ```js
+  uni.setNavigationBarTitle({
+      title: '新的标题'
+  })
+  ```
+
+- uni.setNavigationBarColor(OBJECT)
+
+  设置页面导航条颜色。如果需要进入页面就设置颜色，请延迟执行，防止被框架内设置的颜色逻辑覆盖
+
+  ```js
+  uni.setNavigationBarColor({
+      frontColor: '#ffffff',
+      backgroundColor: '#ff0000',
+      animation: {
+          duration: 400,
+          timingFunc: 'easeIn'
+      }
+  })
+  ```
+
+- uni.showNavigationBarLoading(OBJECT)
+
+  在当前页面显示导航条加载动画
+
+  ```js
+  uni.showNavigationBarLoading()
+  ```
+
+- uni.hideNavigationBarLoading(OBJECT)
+
+  在当前页面隐藏导航条加载动画
+
+  ```js
+  uni.hideNabigationBarLoading()
+  ```
+
+- uni.hideHomeButton(OBJECT)
+
+  隐藏返回首页按钮
+
+  ```js
+  uni.hideHomeButton()
+  ```
+
+具体详见： [https://uniapp.dcloud.io/api/ui/navigationbar?id=setnavigationbartitle](https://uniapp.dcloud.io/api/ui/navigationbar?id=setnavigationbartitle)
+
+#### 设置 TabBar
+
+- uni.setTabBarItem(OBJECT)
+
+  动态设置 tabBar 某一项的内容
+
+  ```js
+  uni.setTabBarItem({
+      index: 0,
+      text: 'text',
+      iconPath: '/path/to/iconPath',
+      selectedIconPath: '/path/to/selectedIconPath'
+  })
+  ```
+
+- uni.setTabBarStyle(OBJECT)
+
+  动态设置 tabBar 的整体样式
+
+  ```js
+  uni.setTabBarStyle({
+      color: '#ff0000',
+      selsectedColor: '#00ff00',
+      backgroundColor: '#0000ff',
+      borderStyle: 'white'
+  })
+  ```
+
+- uni.hideTabBar(OBJECT)
+
+  隐藏 tabBar
+
+- uni.showTabBar(OBJECT)
+
+  显示 tabBar
+
+- uni.setTabBarBadge(OBJECT)
+
+  为 tabBar 某一项的右上角添加文本
+
+  ```js
+  uni.setTabBarBadge({
+      index: 0,
+      text: '1'
+  })
+  ```
+
+- uni.removeTabBarBadge(OBJECT)
+
+  移除 tabBar 某一项右上角文本。
+
+- uni.showTabBarRedDot(OBJECT)
+
+  显示 tabBar 某一项的右上角的红点。
+
+- uni.hideTabBarRedDot(OBJECT)
+
+  隐藏 tabBar 某一项的右上角的红点。
+
+- uni.onTabBarMidButtonTap(CALLBACK)
+
+  监听中间按钮的点击事件。
+
+具体详见： [https://uniapp.dcloud.io/api/ui/tabbar?id=settabbaritem](https://uniapp.dcloud.io/api/ui/tabbar?id=settabbaritem)
+
+#### 背景
+
+- uni.setBackgroundColor(OBJECT)
+
+  动态设置窗口的背景色。
+
+  ```js
+  uni.setBackgroundColor({
+      backgroundColor: '#ffffff',
+      backgroundColorTop: '#222222',
+      backgroundColorBottom: '#333333'
+  })
+  ```
+
+- uni.setBackgroundTextStyle(OBJECT)
+
+  动态设置下拉背景字体、loading 图的样式
+
+  ```js
+  uni.setBackgroundTextStyle({
+      textStyle: 'dark'	// 下拉背景字体、loading 图的样式为dark
+  })
+  ```
+
+具体详见： [https://uniapp.dcloud.io/api/ui/bgcolor?id=setbackgroundcolor](https://uniapp.dcloud.io/api/ui/bgcolor?id=setbackgroundcolor)
+
+#### 动画
+
+uni.createAnimation(OBJECT)
+
+创建一个动画示例 `animation` 。调用实例的方法来描述动画。最后通过动画实例的export方法导出动画数据传递给组建的animation属性。
+
+```js
+let animation = uni.createAnimation({
+    transformOrigin: '50% 50%',
+    duration: 1000,
+    timingFunciton: 'ease',
+    delay: 0
+})
+```
+
+具体详见： [https://uniapp.dcloud.io/api/ui/animation?id=createanimation](https://uniapp.dcloud.io/api/ui/animation?id=createanimation)
+
+#### 滚动
+
+uni.pageScrollTo(OBJECT)
+
+将页面滚动到目标位置。
+
+```js
+uni.pageScrollTo({
+    csrollTop: 0,
+    duration: 300
+})
+```
+
+具体详见： [https://uniapp.dcloud.io/api/ui/scroll?id=pagescrollto](https://uniapp.dcloud.io/api/ui/scroll?id=pagescrollto)
+
+#### 窗口
+
+- uni.onWindowResize(CALLBACK)
+
+  监听窗口尺寸变化事件
+
+  ```js
+  uni.onWindowResize(res => {
+      console.log('变化后的窗口宽度=' + res.size.windowWidth)
+      console.log('变化后的窗口高度=' + res.size.windowHeight)
+  })
+  ```
+
+- uni.offWindowResize(CALLBACK)
+
+  取消监听窗口尺寸变化事件
+
+  ```js
+  uni.offWindowResize(() => {
+      console.log('取消监听窗口尺寸变化事件')
+  })
+  ```
+
+具体详见： [https://uniapp.dcloud.io/api/ui/window?id=onwindowresize](https://uniapp.dcloud.io/api/ui/window?id=onwindowresize)
+
+#### 字体
+
+uni.loadFontFace(OBJECT object)
+
+动态加载网络字体，文件地址需为下载类型。
+
+```js
+uni.loadFontFace({
+    family: 'Bitstream Vera Serif Bold',
+    source: 'url("https://sungd.github.io/Pacifico.ttf")',
+    success() {
+        console.log('success')
+    }
+})
+```
+
+#### 下拉刷新
