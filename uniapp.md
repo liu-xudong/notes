@@ -2514,4 +2514,2064 @@ uni.loadFontFace({
 })
 ```
 
+具体详见： [https://uniapp.dcloud.io/api/ui/font?id=loadfontface](https://uniapp.dcloud.io/api/ui/font?id=loadfontface)
+
 #### 下拉刷新
+
+- onPullDownRefresh
+
+  在 js 中定义 onPullDownRefresh 处理函数（和onLoad等生命周期函数同级），监听该页面用户下拉刷新事件。
+
+- uni.startPullDownRefresh
+
+  开始下拉刷新，调用后出发下拉刷新动画，效果与用户手动下拉刷新一致。
+
+- uni.stopPullDownRefresh
+
+  停止当前页面下拉刷新。
+
+示例：
+
+pages.json
+
+```json
+{
+    "pages": [
+        {
+            "path": "pages/index/index",
+            "style": {
+                "navigationBarTitleText": "uni-app",
+                "enablePullDownRefresh": true
+            }
+        }
+    ],
+    "globalStyle": {
+        "navigationBarTextStyle": "white",
+        "navigationBarBackgroundColor": "#0faeff",
+        "backgroundColor": "#fbf9fe"
+    }
+}
+```
+
+index.vue
+
+```js
+// 仅做示例，实际开发中延时根据需求来使用
+export default {
+	data() {
+		return {
+			text: 'uni-app'
+		}
+	},
+    onLoad: function(option) {
+        setTimeout(function() {
+            console.log('start pulldown')
+        },1000)
+        uni.startPullDownRefresh()
+    },
+    onPullDownRefresh() {
+        console.log('refresh')
+        setTimeout(function() {
+            uni.stopPullDownRefresh()
+        },1000)
+    }
+}
+```
+
+具体详见： [https://uniapp.dcloud.io/api/ui/pulldown?id=onpulldownrefresh](https://uniapp.dcloud.io/api/ui/pulldown?id=onpulldownrefresh)
+
+#### 节点信息
+
+- uni.createSelectorQuery 
+
+  返回一个 `SelectorQuery` 对象实例。可以在这个实例上使用 `select` 等方法选择节点，并使用 `boundingClientRect` 等方法选择需要查询的信息。
+
+- SelectorQuery
+
+  查询节点信息的对象
+
+  + selectorQuery.in(component)
+
+    将选择器的选取范围更改为自定义组件 `component` 内，返回一个 `SelectorQuery` 对象实例。（初始时，选择器仅选取页面范围的节点，不会选取任何自定义组件中的节点）。
+
+    ```js
+    const query = uni.createSelectorQuery().in(this)
+    query.select('#id').boundingClientRect(data => {
+        console.log("得到布局位置信息" + JSON.stringify(data))
+        console.log("节点离页面顶部的距离为" + data.top)
+    }).exec()
+    ```
+
+  + selectorQuery.select(selector)
+
+    在当前页面下选择第一个匹配选择器 `selector` 的节点，返回一个 `NodesRef` 对象实例，可以用于获取节点信息。
+
+  + selectorQuery.selectAll(selector)
+
+    在当前页面下选择匹配选择器 `selector` 的所有节点，返回一个 `NodesRef` 对象实例，可以用于获取节点信息。
+
+  + selectorQuery.selectViewport()
+
+    选择显示区域，可用与获取显示区域的尺寸、滚动位置等信息，返回一个 `NodesRef` 对象实例。
+
+  + selectorQuery.exec(callback)
+
+    执行所有的请求。请求结果按请求次序构成数组，在 callback 的第一个参数中返回。
+
+- NodesRef
+
+  用于获取节点信息的对象
+
+  + nodesRef.fields(object,callback)
+
+    获取节点的相关信息。第一个参数是节点相关信息配置(必选)；第二参数是方法的回调函数，参数是指定的相关节点信息。
+
+  + nodesRef.boundingClientRect(callback)
+
+    添加节点的布局位置的查询请求。相对于显示区域，以像素为单位。其功能类似于 DOM 的 `getBoundingClientRect` 。返回 `NodeRef` 对应的 `SelectorQuery`。
+
+  + nodesRef.scrollOffset(callback)
+
+    添加节点的滚动位置查询请求。以像素为单位。节点必须是 `scroll-view` 或者 `viewport` 。返回 `NodesRef` 对应的 `SelectorQuery` 。
+
+  + nodesRef.context(callback)
+
+    添加节点的 Context 对象查询请求。支持 `VideoContext` 、 `CanvasContext` 和 `MapContext` 等的获取。
+
+  + nodesRef.node(callback)
+
+    获取 `Node` 节点实例。目前支持 `Canvas` 的获取。
+
+具体详见：[https://uniapp.dcloud.io/api/ui/nodes-info?id=createselectorquery](https://uniapp.dcloud.io/api/ui/nodes-info?id=createselectorquery)
+
+#### 节点布局相交状态
+
+- uni.createIntersectionObserver 
+
+  创建并返回一个 `IntersectionObserver` 对象实例。
+
+- IntersectionObserver 对象的方法列表
+
+  | 方法                                                | 说明                                                         |
+  | --------------------------------------------------- | ------------------------------------------------------------ |
+  | IntersectionObserver.relativeTo(selector,[margins]) | 使用选择器指定一个节点，作为参照区域之一                     |
+  | IntersectionObserver.relativeToViewport([margins])  | 指定页面显示区域作为参照区域之一                             |
+  | IntersectionObserver.observe(selector,[callback])   | 指定目标节点并开始监听相交状态变化情况。回调函数 `callback` 包含一个参数 `result` |
+  | IntersectionObserver.disconnect()                   | 停止监听。回调函数将不再触发                                 |
+
+```js
+uni.createIntersectionObserver(this).relativeTo('.scroll',{bottom: 100}).observe('.test',(res) => {
+    console.log(res)
+})
+```
+
+具体详见： [https://uniapp.dcloud.io/api/ui/intersection-observer?id=createintersectionobserver](https://uniapp.dcloud.io/api/ui/intersection-observer?id=createintersectionobserver)
+
+#### 媒体查询
+
+- uni.createMediaQueryObserver([this])
+
+  创建并返回一个 `MediaQueryObserver` 对象实例。
+
+- MediaWueryObserver 对象的方法列表
+
+  | 方法                                                         | 说明                              |
+  | ------------------------------------------------------------ | --------------------------------- |
+  | MediaQueryObserver.observe(Object descriptor,function callback) | 开始监听页面 media query 变化情况 |
+  | MediaQueryObserver.disconnect()                              | 停止监听，回调函数将不再触发      |
+
+具体详见： [https://uniapp.dcloud.io/api/ui/media-query-observer?id=createmediaqueryobserver](https://uniapp.dcloud.io/api/ui/media-query-observer?id=createmediaqueryobserver)
+
+#### 自定义组件
+
+nextTick(function callback)
+
+在小程序自定义组件，如wxcomponents中使用。延迟一部分操作到下一个时间片再执行。（类似于 setTimeout） 。其他平台无此概念。
+
+- 微信小程序：[规范详情](https://developers.weixin.qq.com/miniprogram/dev/api/wx.nextTick.html)
+- 百度小程序：[规范详情](https://smartprogram.baidu.com/docs/develop/api/custom_component/#swan-nextTick/)
+- QQ小程序：[规范详情](https://q.qq.com/wiki/develop/miniprogram/API/interface/interface_nexttick.html#qq-nexttick)
+
+#### 菜单
+
+getMenuButtonBoundingClientRect()
+
+在小程序平台，如果原生导航栏被隐藏，仍然在右上角会有一个悬浮按钮，微信下也被成为胶囊按钮。本 API 用于获取小程序下菜单按钮的布局位置信息，方便开发者布局顶部内容时避开该按钮。
+
+```js
+let menuButtonInfo = uni.getMenuButtonBoundingClientRect()
+```
+
+### 页面和窗口
+
+#### 页面
+
+- getCurrentPages()
+
+  `getCurrentPages()` 函数用于获取当前页面栈的实例，以数组形式按栈的顺序给出，第一个元素为首页，最后一个元素为当前页面。
+
+- $getAppWebview()
+
+  `uni-app` 在 `getCurrentPages()` 获得的页面里内置一个方法 `$getAppWebview()` 可以得到当前 webview 的对象实例，从而实现对 webview 更强大的控制。
+
+具体详见： [https://uniapp.dcloud.io/api/window/window?id=getcurrentpages](https://uniapp.dcloud.io/api/window/window?id=getcurrentpages)
+
+#### 页面通讯
+
+- uni.$emit(eventName,OBJECT)
+
+  触发全局的自定义事件，附加参数都会传给监听器回调函数
+
+  ```js
+  uni.$emit('update',{msg: '页面更新'})
+  ```
+
+- uni.$on(eventName,callback)
+
+  监听全局的自定义事件，事件由 `uni.$emit` 触发，回调函数会接收事件触发函数的传入参数。
+
+  ```js
+  uni.$on('update',function(data) {
+      console.log('监听到事件来自 update, 携带参数 msg 为：' + data.msg)
+  })
+  ```
+
+- uni.$once(eventName,callback)
+
+  监听全局的自定义事件，事件由 `uni.$emit` 触发，但仅触发一次，在第一次触发之后移除该监听器。
+
+  ```js
+  uni.$once('update',function(data) {
+      console.log('监听到事件来自 update,携带参数 msg 为：' + data.msg)
+  })
+  ```
+
+- uni.$off([eventName,callback])
+
+  移除全局自定义事件监听器。
+
+具体详见： [https://uniapp.dcloud.io/api/window/communication?id=emit](https://uniapp.dcloud.io/api/window/communication?id=emit)
+
+#### subNVue原生子窗体
+
+- uni.getSubNVueById(subNvueId)
+
+  通过 `ID` 获取 `subNVues` 原生子窗体的实例。
+
+  ```js
+  const subNVue = uni.getSubNVueById('popup')
+  ```
+
+- uni.getCurrentSubNVue()
+
+  在一个 subnvue 窗体的 nvue 页面代码中，获取当前 `subNVues` 原生子窗体的实例。
+
+  ```js
+  const subNVue = uni.getCurrentSubNVue()
+  ```
+
+- subNVue.show(aniShow,duration,showedCB)
+
+  显示原生子窗体。
+
+  ```js
+  subNVue.show('slide-in-left',200,()=>{
+      console.log('subNVue 原生子窗体显示成功')
+  })
+  ```
+
+- subNVue.hide(aniShow,duration)
+
+  隐藏原生子窗体。
+
+  ```js
+  subNVue.hide('slide-out-left',200)
+  ```
+
+- subNVue.setStyle(style)
+
+  设置原生子窗体的样式。
+
+  ```js
+  subNVue.setStyle({
+      "position": "absolute",	//除 popup 外，其他值域参考 5+ webview position 文档
+      "width": "50%",
+      "height": "50%",
+      "left": "20px",
+      "top": "100px"
+  })
+  ```
+
+- 动画类型
+
+  显示动画与关闭动画，会有默认的对应规则。但是如果通过 API 原生子窗体的关闭动画类型，则不会使用默认的类型。
+
+具体详见： [https://uniapp.dcloud.io/api/window/subNVues](https://uniapp.dcloud.io/api/window/subNVues)
+
+### 文件
+
+#### uni.saveFile(OBJECT)
+
+保存文件到本地
+
+```js
+uni.chooseImage({
+    success: function(res) {
+        let tempFilePaths = res.tempFilePaths
+        uni.saveFile({
+            tempFilePath: tempFilePaths[0],
+            success: function(res) {
+                let savedFilePath = res.savedFilePath
+            }
+        })
+    }
+})
+```
+
+#### uni.getSaveFileList(OBJECT)
+
+获取本地已保存的文件列表
+
+```js
+uni.getSavedFileList({
+    success: function(res) {
+        console.log(res.fileList)
+    }
+})
+```
+
+#### uni.getSavedFileInfo(OBJECT)
+
+获取本地文件的文件信息。此接口只用于获取已保存到本地的文件。
+
+```js
+uni.getSavedFileInfo({
+    filePath: 'unifile://somefile',	// 仅做示例用，非真正的文件路径
+    success: function(res) {
+        console.log(res.size)
+        console.log(res.createTime)
+    }
+})
+```
+
+#### uni.removeSavedFile(OBJECT)
+
+删除本地存储的文件。
+
+```js
+uni.getSaveFileList({
+    success: function(res) {
+        if(res.fileList.length > 0) {
+            uni.removeSavedFile({
+                filePath: res.fileList[0].filePath,
+                complete: function(res) {
+                    console.log(res)
+                }
+            })
+        }
+    }
+})
+```
+
+#### uni.getFileInfo(OBJECT)
+
+获取文件信息
+
+#### uni.openDocument(OBJECT)
+
+新开页面打开文档，支持格式： doc, xls, ppt, pdf, docx, xlsx, pptx。
+
+```js
+uni.downloadFile({
+    url: 'https://example.com/somefile.pdf',
+    success: function(res) {
+        let filePath = res.tempFilePath
+        uni.openDocument({
+            filePath: filePath,
+            success: function(res) {
+                console.log('打开文档成功')
+            }
+        })
+    }
+})
+```
+
+#### uni.getFileSystemManager()
+
+获取全局唯一的文件管理器
+
+- 微信小程序平台，[规范详情](https://developers.weixin.qq.com/miniprogram/dev/api/wx.getFileSystemManager.html)
+- 字节跳动小程序平台，[规范详情](https://developer.toutiao.com/dev/cn/mini-app/develop/api/file/getfilesystemmanager)
+- QQ小程序平台，[规范详情](https://q.qq.com/wiki/develop/miniprogram/API/file/qq.getFileSystemManager.html)
+
+具体详见： [https://uniapp.dcloud.io/api/file/file?id=savefile](https://uniapp.dcloud.io/api/file/file?id=savefile)
+
+### 绘画
+
+#### uni.createOffscreenCanvas()
+
+创建离屏 canvas 实例
+
+仅微信小程序平台支持，[规范详情](https://developers.weixin.qq.com/miniprogram/dev/api/wx.createOffscreenCanvas.html)
+
+#### uni.createCanvasContext(canvasId,this)
+
+具体详见： [https://uniapp.dcloud.io/api/canvas/createCanvasContext](https://uniapp.dcloud.io/api/canvas/createCanvasContext)
+
+#### uni.canvasToTempFilePath(object,component)
+
+把当前画布指定区域的内容导出生成指定大小的图片，并返回文件路径。在自定义组件下，第二个参数传入自定义组件实例，以操作组件内 `<canvas>` 组件。
+
+```js
+uni.canvasToTempFilePath({
+    x: 100,
+    y: 200,
+    width: 50,
+    height: 50,
+    destWidth: 100,
+    destHeight: 100,
+    canvasId: 'myCanvas',
+    success: function(res) {
+        // 在 H5 平台下， tempFilePath 为 base64
+        console.log(res.tempFilePath)
+    }
+})
+```
+
+具体详见： [https://uniapp.dcloud.io/api/canvas/canvasToTempFilePath](https://uniapp.dcloud.io/api/canvas/canvasToTempFilePath)
+
+#### uni.canvasPutImageData(OBJECT,this)
+
+将像素数据绘制到画布的方法，在自定义组件下，第二个参数传入自定义组件实例 this，以操作组件内的 `<canvas>` 组件。
+
+```js
+const data = new Uint8ClampedArray([255,0,0,255])
+uni.canvasPutImageData({
+    canvasId: 'myCanvas',
+    x: 0,
+    y: 0,
+    width: 1,
+    data: data,
+    success(res) {}
+})
+```
+
+具体详见： [https://uniapp.dcloud.io/api/canvas/canvasPutImageData](https://uniapp.dcloud.io/api/canvas/canvasPutImageData)
+
+#### uni.canvasGetImageData(OBJECT,this)
+
+返回一个数组，用来描述 canvas 区域隐含的像素数据，在自定义组件下，第二个参数传入自定义组件实例 this， 以操作组件内 `<canvas>` 组件。
+
+```js
+uni.canvasGetImageData({
+    canvasId: 'myCanvas',
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 100,
+    success(res) {
+        console.log(res.width)	// 100
+        console.log(res.height)	// 100
+        console.log(res.data instanceof Uint8ClampedArray)	// true
+        console.log(res.data.length)	// 100 * 100 * 4
+    }
+})
+```
+
+具体详见： [https://uniapp.dcloud.io/api/canvas/canvasGetImageData](https://uniapp.dcloud.io/api/canvas/canvasGetImageData)
+
+#### CanvasContext
+
+- CanvasContext.fillStyle string
+
+  填充颜色
+
+- CanvasContext.strokeStyle string
+
+  边框颜色
+
+- CanvasContext.shadowOffsetX number
+
+  阴影相对于形状在水平方向的偏移
+
+- CanvasContext.shadowOffsetY number
+
+  阴影相对于形状在竖直方向的偏移
+
+- CanvasContext.shadowColor number
+
+  阴影的颜色
+
+- CanvasContext.shadowBlur number
+
+  阴影的的模糊级别
+
+- CanvasContext.lineWidth number
+
+  线条的宽度
+
+- CanvasContext.lineCap number
+
+  线条的端点样式
+
+- CanvasContext.lineJoin number
+
+  线条的交点样式
+
+- CanvasContext.miterLimit number
+
+  最大斜接长度
+
+- CanvasContext.lineDashOffset number
+
+  虚线偏移量，初始值为0
+
+- CanvasContext.font string
+
+  当前字体样式的属性，符合 [CSS font 语法](https://developer.mozilla.org/zh-CN/docs/Web/CSS/font) 的 DOMString 字符串，至少需要提供字体大小和字体族名。默认值为 10px sans-serif。
+
+- CanvasContext.globalAlpha number
+
+  全局画笔透明度。范围 0 - 1 ，0 表示完全透明，1 表示完全不透明
+
+- CanvasContext.globalCompositeOperation string
+
+  在绘制新形状时应用的合成操作的类型。目前安卓版本只适用于 `fill` 填充块的合成，用于 `stroke` 线段的合成效果都是 `source-over`
+
+- CanvasContext.arc
+
+  画一条弧线。创建一个圆可以用 `arc()` 方法指定起始弧度为 0，终止弧度为 `2 * Math.PI` 。用 `stroke()` 或者 `fill()` 方法来在 `canvas` 中画弧线。	
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  
+  // Draw coordinates
+  ctx.arc(100,75,50,0,2 * Math.PI)
+  ctx.setFillStyle('#EEEEEE')
+  ctx.fill()
+  
+  ctx.beginPath()
+  ctx.moveTo(40, 75)
+  ctx.lineTo(160, 75)
+  ctx.moveTo(100, 15)
+  ctx.lineTo(100, 135)
+  ctx.setStrokeStyle('#AAAAAA')
+  ctx.stroke()
+  
+  ctx.setFontSize(12)
+  ctx.setFillStyle('black')
+  ctx.fillText('0', 165, 78)
+  ctx.fillText('0.5 * PI', 15, 78)
+  ctx.fillText('1.5 * PI', 83, 10)
+  
+  // Draw points
+  ctx.beginPath()
+  ctx.arc(100, 75, 2, 0, 2 * Math.PI)
+  ctx.setFillStyle('lightgreen')
+  ctx.fill()
+  
+  ctx.beginPath()
+  ctx.arc(100, 25, 2, 0, 2 * Math.PI)
+  ctx.setFillStyle('blue')
+  ctx.fill()
+  
+  ctx.beginPath()
+  ctx.arc(150, 75, 2, 0, 2 * Math.PI)
+  ctx.setFillStyle('red')
+  ctx.fill()
+  
+  // Draw arc
+  ctx.beginPath()
+  ctx.arc(100, 75, 50, 0, 1.5 * Math.PI)
+  ctx.setStrokeStyle('#333333')
+  ctx.stroke()
+  
+  ctx.draw()
+  ```
+
+- CanvasContext.arcTo
+
+  根据控制点和半径绘制圆弧路径。
+
+  ```js
+  CanvasContext.arcTo(x1, y1, x2, y2, radius)
+  ```
+
+- CanvasContext.beginPath
+
+  开始创建一个路径，需要调用 fill 或者 stroke 才会适用路径进行填充或描边
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  // begin path
+  ctx.rect(10, 10, 100, 30)
+  ctx.setFillStyle('yellow')
+  ctx.fill()
+  
+  // begin another path
+  ctx.beginPath()
+  ctx.rect(10, 40, 100, 30)
+  
+  // only fill this rect, not in current path
+  ctx.setFillStyle('blue')
+  ctx.fillRect(10, 70, 100, 30)
+  
+  ctx.rect(10, 100, 100, 30)
+  
+  // it will fill current path
+  ctx.setFillStyle('red')
+  ctx.fill()
+  ctx.draw()
+  ```
+
+- CanvasContext.bezierCurveTo
+
+  创建三次方贝塞尔曲线路径
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  
+  // Draw points
+  ctx.beginPath()
+  ctx.arc(20, 20, 2, 0, 2 * Math.PI)
+  ctx.setFillStyle('red')
+  ctx.fill()
+  
+  ctx.beginPath()
+  ctx.arc(200, 20, 2, 0, 2 * Math.PI)
+  ctx.setFillStyle('lightgreen')
+  ctx.fill()
+  
+  ctx.beginPath()
+  ctx.arc(20, 100, 2, 0, 2 * Math.PI)
+  ctx.arc(200, 100, 2, 0, 2 * Math.PI)
+  ctx.setFillStyle('blue')
+  ctx.fill()
+  
+  ctx.setFillStyle('black')
+  ctx.setFontSize(12)
+  
+  // Draw guides
+  ctx.beginPath()
+  ctx.moveTo(20, 20)
+  ctx.lineTo(20, 100)
+  ctx.lineTo(150, 75)
+  
+  ctx.moveTo(200, 20)
+  ctx.lineTo(200, 100)
+  ctx.lineTo(70, 75)
+  ctx.setStrokeStyle('#AAAAAA')
+  ctx.stroke()
+  
+  // Draw quadratic curve
+  ctx.beginPath()
+  ctx.moveTo(20, 20)
+  ctx.bezierCurveTo(20, 100, 200, 100, 200, 20)
+  ctx.setStrokeStyle('black')
+  ctx.stroke()
+  
+  ctx.draw()
+  ```
+
+- CanvasContext.clearRect
+
+  清除画布上在该矩形区域内的内容
+
+  ```html
+  <canvas canvas-id="myCanvas" id="myCanvas" style="border: 1px solid; background: #123456;"/>
+  ```
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  ctx.setFillStyle('red')
+  ctx.fillRect(0, 0, 150, 200)
+  ctx.setFillStyle('blue')
+  ctx.fillRect(150, 0, 150, 200)
+  ctx.clearRect(10, 10, 150, 75)
+  ctx.draw()
+  ```
+
+- CanvasContext.clip
+
+  从原始画布中剪切任意形状和尺寸。一旦剪切了某个区域，则所有之后的绘图都会被限制在被剪切的区域内(不能访问画布上的其他区域)。可以在使用 clip() 方法前通过使用 save() 方法对当前画布区域进行保存，并在以后的任意时间对其进行恢复(通过 restore()方法)
+
+  ```js
+  const context = uni.createCanvasContext('myCanvas')
+  
+  uni.downloadFile({
+      url: 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/uni@2x.png',
+      success: function(res) {
+          context.save()
+          context.beginPath()
+          context.arc(96, 96, 48, 0, 2 * Math.PI)
+          context.clip()
+          context.drawImage(res.tempFilePath, 48, 48)
+          context.restore()
+          context.draw()
+      }
+  })
+  ```
+
+- CanvasContext.closePath
+
+  关闭一个路径
+
+- CanvasContext.createCircularGradient
+
+  创建一个从圆心开始的渐变，返回的 CanvasGradient 对象，需要使用 `CanvasGradient.addColorStop()` 来指定渐变点，至少要两个
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  
+  // Create circular gradient
+  const grd = ctx.createCircularGradient(75, 50, 50)
+  grd.addColorStop(0, 'red')
+  grd.addColorStop(1, 'white')
+  
+  // Fill with gradient
+  ctx.setFillStyle(grd)
+  ctx.fillRect(10, 10, 150, 80)
+  ctx.draw()
+  ```
+
+- CanvasContext.createLinearGradient
+
+  创建一个线性的渐变颜色。返回的 CanvasGradient 对象，需要使用 `CanvasGradient.addColorStop()` 来指定渐变点，至少要两个。
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  
+  // Create linear gradient
+  const grd = ctx.createLinearGradient(0, 0, 200, 0)
+  grd.addColorStop(0, 'red')
+  grd.addColorStop(1, 'white')
+  
+  // Fill with gradient
+  ctx.setFillStyle(grd)
+  ctx.fillRect(10, 10, 150, 80)
+  ctx.draw()
+  ```
+
+- CanvasContext.createPattern
+
+  对指定的图像创建模式的方法，可在指定的方向上重复元图像
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  const pattern = ctx.createPattern('/path/to/image','repeat-x')
+  ctx.fillStyle = pattern
+  ctx.fillRect(0, 0, 300, 150)
+  ctx.draw()
+  ```
+
+- CanvasContext.draw
+
+  将之前在绘图上下文中的描述（路径、变形、样式）画到 canvas 中
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  
+  ctx.setFillStyle('red')
+  ctx.fillRect(10, 10, 150, 100)
+  ctx.draw()
+  ctx.fillRect(50, 50, 150, 100)
+  ctx.draw()
+  ```
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  
+  ctx.setFillStyle('red')
+  ctx.fillRect(10, 10, 150, 100)
+  ctx.draw()
+  ctx.fillRect(50, 50, 150, 100)
+  ctx.draw(true)
+  ```
+
+- CanvasContext.drawImage
+
+  绘制图像到画布
+
+  ```js
+  const = uni.createCanvasContext('myCanvas')
+  
+  uni.chooseImage({
+      success: function(res) {
+          ctx.drawImage(res.tempFilePaths[0], 0, 0, 150, 100)
+          ctx.draw()
+      }
+  })
+  ```
+
+- CanvasContext.fill
+
+  对当前路径中的内容进行填充。默认的填充色为黑色。
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  ctx.moveTo(10, 10)
+  ctx.lineTo(100, 10)
+  ctx.lineTo(100, 100)
+  ctx.fill()
+  ctx.draw()
+  ```
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  // begin path
+  ctx.rect(10, 10, 100, 30)
+  ctx.setFillStyle('yellow')
+  ctx.fill()
+  
+  // begin another path
+  ctx.beginPath()
+  ctx.rect(10, 40, 100, 30)
+  
+  // only fill this rect, not in current path
+  ctx.setFillStyle('blue')
+  ctx.fillRect(10, 70, 100, 30)
+  
+  // it will fill current path
+  ctx.setFillStyle('red')
+  ctx.fill()
+  ctx.draw()
+  ```
+
+- CanvasContext.fillRect
+
+  填充一个矩形
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  ctx.setFillStyle('red')
+  ctx.fillRect(10, 10, 150, 75)
+  ctx.draw()
+  ```
+
+- CanvasContext.fillText
+
+  在画布上绘制被填充的文本
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  
+  ctx.setFontSize(20)
+  ctx.fillText('Hello', 20, 20)
+  ctx.fillText('MINA', 100, 100)
+  
+  ctx.draw()
+  ```
+
+- CanvasContext.lineTo
+
+  增加一个新点，然后创建一条从上次指定点到目标点的线
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  ctx.moveTo(10, 10)
+  ctx.rect(10, 10, 100, 50)
+  ctx.lineTo(110, 60)
+  ctx.stroke()
+  ctx.draw()
+  ```
+
+- CanvasContext.measureText
+
+  测量文本尺寸信息，目前仅返回文本宽度。同步接口
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  ctx.font = 'italic bold 20px cursive'
+  const metrics = ctx.measureText('Hello World')
+  console.log(metrics.width)
+  ```
+
+- CanvasContext.moveTo
+
+  把路径移动到画布中的指定点，不创建线条。用 `stroke()` 方法来画线条
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  ctx.moveTo(10, 10)
+  ctx.lineTo(100, 10)
+  
+  ctx.moveTo(10, 50)
+  ctx.lineTo(100, 50)
+  ctx.stroke()
+  ctx.draw()
+  ```
+
+- CanvasContext.quadraticCurveTo
+
+  创建二次贝塞尔曲线路径。曲线的起始点为路径中前一个点
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  
+  // Draw points
+  ctx.beginPath()
+  ctx.arc(20, 20, 2, 0, 2 * Math.PI)
+  ctx.setFillStyle('red')
+  ctx.fill()
+  
+  ctx.beginPath()
+  ctx.arc(200, 20, 2, 0, 2 * Math.PI)
+  ctx.setFillStyle('lightgreen')
+  ctx.fill()
+  
+  ctx.beginPath()
+  ctx.arc(20, 100, 2, 0, 2 * Math.PI)
+  ctx.setFillStyle('blue')
+  ctx.fill()
+  
+  ctx.setFillStyle('black')
+  ctx.setFontSize(12)
+  
+  // Draw guides
+  ctx.beginPath()
+  ctx.moveTo(20, 20)
+  ctx.lineTo(20, 100)
+  ctx.lineTo(200, 20)
+  ctx.setStrokeStyle('#AAAAAA')
+  ctx.stroke()
+  
+  // Draw quadratic curve
+  ctx.beginPath()
+  ctx.moveTo(20, 20)
+  ctx.quadraticCurveTo(20, 100, 200, 20)
+  ctx.setStrokeStyle('black')
+  ctx.stroke()
+  
+  ctx.draw()
+  ```
+
+- CanvasContext.rect
+
+  创建一个矩形
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  ctx.rect(10, 10, 150, 75)
+  ctx.setFillStyle('red')
+  ctx.fill()
+  ctx.draw()
+  ```
+
+- CanvasContext.restore
+
+  恢复之前保存的绘图上下文
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  
+  // save the default fill style
+  ctx.sava()
+  ctx.setFillStyle('red')
+  ctx.fillRect(10, 10, 150, 100)
+  
+  // restore to the previous saved state
+  ctx.restore()
+  ctx.fillRect(50, 50, 150, 100)
+  
+  ctx.draw()
+  ```
+
+- CanvasContext.rotate
+
+  以原点为中心，原点可以用 translate 方法修改。顺时针旋转当前坐标轴。多次调用 rotate，旋转的角度会叠加
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  
+  ctx.strokeRect(100, 10, 150, 100)
+  ctx.rotate(20 * Math.PI / 180)
+  ctx.strokeRect(100, 10, 150, 100)
+  ctx.rotate(20 * Math.PI / 180)
+  ctx.strokeRect(100, 10, 150, 100)
+  
+  ctx.draw()
+  ```
+
+- CanvasContext.save
+
+  保存当前的绘画上下文
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  
+  // save the default fill style
+  ctx.save()
+  ctx.setFillStyle('red')
+  ctx.fillRect(10, 10, 150, 100)
+  
+  // restore to the previous saved state
+  ctx.restore()
+  ctx.fillRect(50, 50, 150, 100)
+  
+  ctx.draw()
+  ```
+
+- CanvasContext.scale
+
+  在调用 `scale` 方法后，之后创建的路径其横纵坐标会被缩放。多次调用 `scale` ，倍数会相乘
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  
+  ctx.strokeRect(10, 10, 25, 15)
+  ctx.scale(2, 2)
+  ctx.strokeRect(10, 10, 25, 15)
+  ctx.scale(2, 2)
+  ctx.strokeRect(10, 10, 25, 15)
+  
+  ctx.draw()
+  ```
+
+- CanvasContext.setFillStyle
+
+  设置填充色，如果没有设置 fillStyle ，默认颜色为 black
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  ctx.setFillStyle('red')
+  ctx.fillRect(10, 10, 150, 75)
+  ctx.draw()
+  ```
+
+- CanvasContext.setFontSize
+
+  设置字体的字号
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  
+  ctx.setFontSize(20)
+  ctx.fillText('20', 20, 20)
+  ctx.setFontSize(30)
+  ctx.fillText('30', 40, 40)
+  ctx.setFontSize(40)
+  ctx.fillText('40', 60, 60)
+  ctx.setFontSize(50)
+  ctx.fillText('50', 90, 90)
+  
+  ctx.draw()
+  ```
+
+- CanvasContext.setGlobalAlpha
+
+  设置全局画笔透明度
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  
+  ctx.setFillStyle('red')
+  ctx.fillRect(10, 10, 150, 100)
+  ctx.setGlobalAlpha(0.2)
+  ctx.setFillStyle('blue')
+  ctx.fillRect(50, 50, 150, 100)
+  ctx.setFillStyle('yellow')
+  ctx.fillRect(100, 100, 150, 100)
+  
+  ctx.draw()
+  ```
+
+- CanvasContext.setLineCap
+
+  设置线条的端点样式
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  ctx.beginPath()
+  ctx.moveTo(10, 10)
+  ctx.lineTo(150, 10)
+  ctx.stroke()
+  
+  ctx.beginPath()
+  ctx.setLineCap('butt')
+  ctx.setLineWidth(10)
+  ctx.moveTo(10, 30)
+  ctx.lineTo(150, 30)
+  ctx.stroke()
+  
+  ctx.beginPath()
+  ctx.setLineCap('round')
+  ctx.setLineWidth(10)
+  ctx.moveTo(10, 50)
+  ctx.LineTo(150, 50)
+  ctx.stroke()
+  
+  ctx.beginPath()
+  ctx.setLineCap('square')
+  ctx.setLineWidth(10)
+  ctx.moveTo(10, 70)
+  ctx.lineTo(150, 70)
+  ctx.stroke()
+  
+  ctx.draw()
+  ```
+
+- CanvasContext.setLineDash
+
+  设置线条宽度
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  
+  ctx.setLineDash([10, 20], 5)
+  
+  ctx.beginPath()
+  ctx.moveTo(0, 100)
+  ctx.lineTo(400, 100)
+  ctx.stroke()
+  
+  ctx.draw()
+  ```
+
+- CanvasContext.setLineJoin
+
+  设置线条的交点样式
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  ctx.beginPath()
+  ctx.moveTo(10, 10)
+  ctx.lineTo(100, 50)
+  ctx.lineTo(10, 50)
+  ctx.stroke()
+  
+  ctx.beginPath()
+  ctx.setLineJoin('bevel')
+  ctx.setLineWidth(10)
+  ctx.moveTo(50, 10)
+  ctx.lineTo(140, 50)
+  ctx.lineTo(50, 90)
+  ctx.stroke()
+  
+  ctx.beginPath()
+  ctx.setLineJoin('round')
+  ctx.setLineWidth(10)
+  ctx.moveTo(90, 10)
+  ctx.lineTo(180, 50)
+  ctx.lineTo(90, 90)
+  ctx.stroke()
+  
+  ctx.beginPath()
+  ctx.setLineJoin('miter')
+  ctx.setLineWidth(10)
+  ctx.moveTo(130, 10)
+  ctx.lineTo(220, 50)
+  ctx.lineTo(130, 90)
+  ctx.stroke()
+  
+  ctx.draw()
+  ```
+
+- CanvasContext.setLineWidth
+
+  设置线条的宽度
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  ctx.beginPath()
+  ctx.moveTo(10, 10)
+  ctx.lineTo(150, 10)
+  ctx.stroke()
+  
+  ctx.beginPath()
+  ctx.setLineWidth(5)
+  ctx.moveTo(10, 30)
+  ctx.lineTo(150, 30)
+  ctx.stroke()
+  
+  ctx.beginPath()
+  ctx.setLineWidth(10)
+  ctx.moveTo(10, 50)
+  ctx.lineTo(150, 50)
+  ctx.stroke()
+  
+  ctx.beginPath()
+  ctx.setLineWidth(15)
+  ctx.moveTo(10, 70)
+  ctx.lineTo(150, 70)
+  ctx.stroke()
+  
+  ctx.draw()
+  ```
+
+- CanvasContext.setMiterLimit
+
+  设置最大斜接长度，斜接长度指的是在两条线交汇处内角和外角之间的距离。当 `setLineJoin()` 为 miter 时才有效。超过最大倾斜长度的，连接处将以 lineJoin 为 bevel 来显示。
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  ctx.beginPath()
+  ctx.setLineWidth(10)
+  ctx.setLineJoin('miter')
+  ctx.setMiterLimit(1)
+  ctx.moveTo(10, 10)
+  ctx.lineTo(100, 50)
+  ctx.lineTo(10, 90)
+  ctx.stroke()
+  
+  ctx.beginPath()
+  ctx.setLineWidth(10)
+  ctx.setLineJoin('miter')
+  ctx.setMiterLimit(2)
+  ctx.moveTo(50, 10)
+  ctx.lineTo(140, 50)
+  ctx.lineTo(50, 90)
+  ctx.stroke()
+  
+  ctx.beginPath()
+  ctx.setLineWidth(10)
+  ctx.setLineJoin('miter')
+  ctx.setMiterLimit(3)
+  ctx.moveTo(90, 10)
+  ctx.lineTo(180, 50)
+  ctx.lineTo(90, 90)
+  ctx.stroke()
+  
+  ctx.beginPath()
+  ctx.setLineWidth(10)
+  ctx.setLineJoin('miter')
+  ctx.setMiterLimit(4)
+  ctx.moveTo(130, 10)
+  ctx.lineTo(220, 50)
+  ctx.lineTo(130, 90)
+  ctx.stroke()
+  
+  ctx.draw()
+  ```
+
+- CanvasContext.setShadow
+
+  设置阴影样式。如果没有设置，offsetX 默认值为0，offsetY 默认值为0，blur 默认值为0，color 默认值为 black
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  ctx.setFillStyle('red')
+  ctx.setShadow(10, 50, 50, 'blue')
+  ctx.fillRect(10, 10, 150, 75)
+  ctx.draw()
+  ```
+
+- CanvasContext.setStrokeStyle
+
+  设置边框颜色。如果没有设置 fillStyle ，默认颜色为 black
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  ctx.setStrokeStyle('red')
+  ctx.strokeRect(10, 10, 150, 75)
+  ctx.draw()
+  ```
+
+- CanvasContext.setTextAlign
+
+  用于设置文字的对齐
+
+  ```js
+  const ctx = uni.createCanvasContext()
+  
+  ctx.setStrokeStyle('red')
+  ctx.moveTo(150, 20)
+  ctx.lineTo(150, 170)
+  ctx.stroke()
+  
+  ctx.setFontSize(15)
+  ctx.setTextAlign('left')
+  ctx.fillText('textAlign=left', 150, 60)
+  
+  ctx.setTextAlign('center')
+  ctx.fillText('textAlign=center', 150, 80)
+  
+  ctx.setTextAlign('right')
+  ctx.fillText('textAlign=right', 150, 100)
+  
+  ctx.draw()
+  ```
+
+- CanvasContext.setTextBaseline
+
+  用于设置文字的水平对齐
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  
+  ctx.setStrokeStyle('red')
+  ctx.moveTo(5, 75)
+  ctx.lineTo(295, 75)
+  ctx.stroke()
+  
+  ctx.setFontSize(20)
+  
+  ctx.setTextBaseline('top')
+  ctx.fillText('top', 5, 75)
+  
+  ctx.setTextBaseline('middle')
+  ctx.fillText('middle', 50, 75)
+  
+  ctx.setTextBaseline('bottom')
+  ctx.fillText('bottom', 120, 75)
+  
+  ctx.setTextBaseline('normal')
+  ctx.fillText('normal', 200, 75)
+  
+  ctx.draw()
+  ```
+
+- CanvasContext.setTransform
+
+  使用矩阵重新设置（覆盖）当前变换的方法
+
+- CanvasContext.stroke
+
+  画出当前路径的边框。默认颜色为黑色
+
+  ```js
+  const ctx = uni.createCanvasContext()
+  ctx.moveTo(10, 10)
+  ctx.lineTo(100, 10)
+  ctx.lineTo(100, 100)
+  ctx.stroke()
+  ctx.draw()
+  ```
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  // begin path
+  ctx.rect(10, 10, 100, 30)
+  ctx.setStrokeStyle('yellow')
+  ctx.stroke()
+  
+  // begin another path
+  ctx.beginPath()
+  ctx.rect(10, 40, 100, 30)
+  
+  // only stoke this rect, not in current path
+  ctx.setStrokeStyle('blue')
+  ctx.strokeRect(10, 70, 100, 30)
+  
+  ctx.rect(10, 100, 100, 30)
+  
+  // it will stroke current path
+  ctx.setStrokeStyle('red')
+  ctx.stroke()
+  ctx.draw()
+  ```
+
+- CanvasContext.strokeRect
+
+  画一个矩形（非填充）。用 `setFillStroke()` 设置边框颜色，如果没有设置默认是黑色
+
+  ```js
+  const ctx = uni.createCanvasContext('myCanvas')
+  ctx.setStrokeStyle('red')
+  ctx.strokeRect(10, 10, 150, 75)
+  ctx.draw()
+  ```
+
+- CanvasContext.strokeText
+
+  给定的（x,y）位置绘制文本描边的方法
+
+- CanvasContext.transform
+
+  使用矩阵多次叠加当前变幻的方法
+
+- CanvasContext.translate
+
+  对当前坐标系的原点 (0,0) 进行变换，磨人的坐标系原点为页面左上角
+
+  ```js
+  const ctx = uni.createCanvasContext('muCanvas')
+  
+  ctx.strokeRect(10, 10, 150, 100)
+  ctx.translate(20, 20)
+  ctx.strokeRect(10, 10, 150, 100)
+  ctx.translate(20, 20)
+  ctx.strokeRect(10, 10, 150, 100)
+  
+  ctx.draw()
+  ```
+
+具体详见： [https://uniapp.dcloud.io/api/canvas/CanvasContext](https://uniapp.dcloud.io/api/canvas/CanvasContext)
+
+#### CanvasGradient
+
+CanvasGradient.addColorStop(stop,color)
+
+创建一个颜色的渐变点
+
+```js
+const ctx = uni.createCanvasContext('myCanvas')
+
+// Create circular gradient
+const grd = ctx.createLinearGradient(30, 10, 120, 10)
+grd.addColorStop(0, 'red')
+grd.addColorStop(0.16, 'orange')
+grd.addColorStop(0.33, 'yellow')
+grd.addColorStop(0.5, 'green')
+grd.addColorStop(0.66, 'cyan')
+grd.addColorStop(0.83, 'blue')
+grd.addColorStop(1, 'purple')
+
+// Fill with gradient
+ctx.setFillStyle(grd)
+ctx.fillRect(10, 10, 150, 80)
+ctx.draw()
+```
+
+具体详见： [https://uniapp.dcloud.io/api/canvas/CanvasGradient?id=canvasgradientaddcolorstop](https://uniapp.dcloud.io/api/canvas/CanvasGradient?id=canvasgradientaddcolorstop)
+
+### 广告
+
+#### 激励视频广告
+
+具体详见： [https://uniapp.dcloud.io/api/a-d/rewarded-video](https://uniapp.dcloud.io/api/a-d/rewarded-video)
+
+#### 全屏视频广告
+
+具体详见： [https://uniapp.dcloud.io/api/a-d/full-screen-video?id=%e5%85%a8%e5%b1%8f%e8%a7%86%e9%a2%91%e5%b9%bf%e5%91%8a](https://uniapp.dcloud.io/api/a-d/full-screen-video?id=%e5%85%a8%e5%b1%8f%e8%a7%86%e9%a2%91%e5%b9%bf%e5%91%8a)
+
+#### 插屏广告
+
+具体详见： [https://uniapp.dcloud.io/api/a-d/interstitial](https://uniapp.dcloud.io/api/a-d/interstitial)
+
+### 第三方服务
+
+#### 获取服务供应商
+
+uni.getProvider(OBJECT)
+
+获取服务供应商
+
+```js
+uni.getProvider({
+    service: 'oauth',
+    success: function(res) {
+        console.log(res.provider)
+        if(res.provider.indexOf('qq')) {
+            uni.login({
+                provider: 'qq',
+               	success: function(loginRes) {
+                    console.log(JSON.stringify(loginRes))
+                }
+            })
+        }
+    }
+})
+```
+
+具体详见： [https://uniapp.dcloud.io/api/plugins/provider](https://uniapp.dcloud.io/api/plugins/provider)
+
+#### 登录
+
+- uni.login(OBJECT)
+
+  登录
+
+  ```js
+  uni.login({
+      provider: 'weixin', 
+      success: function(loginRes) {
+          console.log(loginRes.authResult)
+      }
+  })
+  ```
+
+- uni.checkSession
+
+  检查登录状态是否过期
+
+- uni.getUserIfo
+
+  获取用户信息
+
+  ```js
+  uni.login({
+      provider: 'weixin',
+      success: function(loginRes) {
+          console.log(loginRes.authResult)
+          // 获取用户信息
+          uni.getUserInfo({
+              provier: 'weixin',
+              success: function(infoRes) {
+                  console.log('用户昵称为：' + infoRes.userInfo.nickName)
+              }
+          })
+      }
+  })
+  ```
+
+具体详见： [https://uniapp.dcloud.io/api/plugins/login?id=login](https://uniapp.dcloud.io/api/plugins/login?id=login)
+
+#### 分享
+
+- uni.share(OBJECT)
+
+  uni-app的App引擎已经封装了微信、QQ、微博的分享SDK，开发者可以直接调用相关功能。
+
+  可以分享到微信、QQ、微博，每个社交平台被称为分享服务提供商，即provider。
+
+  可以分享文字、图片、图文横条、音乐、视频等多种形式。同时注意，分享为小程序也使用本API。即在App里可以通过本API把一个内容以小程序（通常为内容页）方式直接分享给微信好友。
+
+  + 分享到微信聊天界面
+
+    * 分享文字
+
+      ```js
+      uni.share({
+          provider: 'weixin',
+          scene: 'WXSceneSession',
+          type: 1,
+          summary: '我正在使用HBuilderX开发uni-app，赶紧跟我一起来体验！'，
+          success: function(res) {
+          	console.log('success:' + JSON.stringify(res))
+      	},
+          fail: function(err) {
+              console.log('fail:' + JSON.stringify(err))
+          }    
+      })
+      ```
+
+    * 分享图片
+
+      ```js
+      uni.share({
+          provider: 'weixin',
+          scene: 'WXSceneSession',
+          type: 2,
+          imageUrl: 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/uni@2x.png',
+          success: function(res) {
+          	console.log('success:' + JSON.stringify(res))
+      	},
+          fail: function(err) {
+              console.log('fail:' + JSON.stringify(err))
+          }    
+      })
+      ```
+
+    * 分享图文
+
+      href、imageUrl 为必选参数，title/summary 二选一，最好将这四个参数都选上
+
+      ```js
+      uni.share({
+          provider: 'weixin',
+          scene: 'WXSceneSession',
+          type: 0,
+          href: 'http://uniapp.dcloud.io/',
+          title: 'uni-app分享',
+          summary: '我正在使用HBuilderX开发uni-app,赶紧跟我一起体验！',
+          imageUrl: 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/uni@2x.png',
+          success: function(res) {
+              console.log('success:' + JSON.stringify(res))
+          },
+          fail: function(err) {
+              console.log('fail:' + JSON.stringify(err))
+          }
+      })
+      ```
+
+  + 分享到微信朋友圈
+
+    * 分享文字
+
+      ```js
+      uni.share({
+          provider: "weixin",
+          scene: "WXSenceTimeline",
+          type: 1,
+          summary: "我正在使用HBuilderX开发uni-app，赶紧跟我一起来体验！",
+          success: function (res) {
+              console.log("success:" + JSON.stringify(res));
+          },
+          fail: function (err) {
+              console.log("fail:" + JSON.stringify(err));
+          }
+      });
+      ```
+
+    * 分享图片
+
+      ```js
+      uni.share({
+          provider: "weixin",
+          scene: "WXSenceTimeline",
+          type: 2,
+          imageUrl: "https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/uni@2x.png",
+          success: function (res) {
+              console.log("success:" + JSON.stringify(res));
+          },
+          fail: function (err) {
+              console.log("fail:" + JSON.stringify(err));
+          }
+      });
+      ```
+
+    * 分享图文
+
+      ```js
+      uni.share({
+          provider: 'weixin',
+          scene: 'WXSenceTimeline',
+          type: 0,
+          href: 'http://uniapp.dcloud.io/',
+          title: 'uni-app分享',
+          summary: '我正在使用HBuilderX开发uni-app,赶紧跟我一起体验！',
+          imageUrl: 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/uni@2x.png',
+          success: function(res) {
+              console.log('success:' + JSON.stringify(res))
+          },
+          fail: function(err) {
+              console.log('fail:' + JSON.stringify(err))
+          }
+      })
+      ```
+
+- uni.shareWithSystem(OBJECT)
+
+  调用系统分享组件发送分享消息，不需要配置分享 SDK
+
+  ```js
+  uni.shareWithSystem({
+      summary: '',
+      href: 'https://uniapp.dcloud.io',
+      success() {
+          // 分享完成，请注意此时不一定是分享成功
+      },
+      fail() {
+          // 分享失败
+      }
+  })
+  ```
+
+- plus.share.sendWithSystem(msg, successCB, errorCB)
+
+  Android和iOS都有应用注册分享接口的机制，基本上所有有接收分享内容功能的应用，都会注册分享接口。
+
+  App端可调用手机的系统分享，实现所有注册分享的应用的呼起，比如短信、邮件、蓝牙(仅Android)、隔空投送(仅iOS)，或其他注册系统分享的应用，比如钉钉。
+
+  与`uni.share`相比，调用系统分享不需要集成三方sdk。但有些功能上的限制，比如无法分享为微信小程序。
+
+  ```js
+  plus.share.sendWithSystem({content:'分享内容',href:'https://www.dcloud.io/'}, function(){
+      console.log('分享成功');
+  }, function(e){
+      console.log('分享失败：'+JSON.stringify(e));
+  });
+  ```
+
+- onShareAppMessage(OBJECT)
+
+  小程序中用户点击分享后，在 js 中定义 onShareAppMessage 处理函数（和 onLoad 等生命周期函数同级），设置该页面的分享信息。
+
+  - 用户点击分享按钮的时候会调用。这个分享按钮可能是小程序右上角原生菜单自带的分享按钮，也可能是开发者在页面中放置的分享按钮（\）；
+  - 此事件需要 return 一个Object，用于自定义分享内容。
+
+  微信小程序平台的分享管理比较严格，请参考 [小程序分享指引](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share.html)。
+
+  ```js
+  export default {
+    onShareAppMessage(res) {
+      if (res.from === 'button') {// 来自页面内分享按钮
+        console.log(res.target)
+      }
+      return {
+        title: '自定义分享标题',
+        path: '/pages/test/test?id=123'
+      }
+    }
+  }
+  ```
+
+- uni.showShareMenu(OBJECT)
+
+  小程序的原生菜单中显示分享按钮
+
+- uni.hideShareMenu(OBJECT)
+
+  小程序的原生菜单中隐藏分享按钮
+
+  ```js
+  uni.hideShareMenu()
+  ```
+
+具体详见： [https://uniapp.dcloud.io/api/plugins/share](https://uniapp.dcloud.io/api/plugins/share)
+
+#### 支付
+
+uni.requestPayment(OBJECT)
+
+支付
+
+具体详见： [https://uniapp.dcloud.io/api/plugins/payment](https://uniapp.dcloud.io/api/plugins/payment)
+
+#### 推送
+
+具体详见： [https://uniapp.dcloud.io/api/plugins/push](https://uniapp.dcloud.io/api/plugins/push)
+
+#### 语音
+
+具体详见： [https://uniapp.dcloud.io/api/plugins/voice](https://uniapp.dcloud.io/api/plugins/voice)
+
+### 平台扩展
+
+#### App原生插件
+
+- uni.requireNativePlugin(PluginName)
+
+  引入 App 原生插件
+
+- 内置原生插件
+
+- 本地插件
+
+- 云端插件
+
+具体详见： [https://uniapp.dcloud.io/api/extend/native-plugin](https://uniapp.dcloud.io/api/extend/native-plugin)
+
+### 其他
+
+#### 授权
+
+uni.authorize(OBJECT)
+
+提前向用户发起授权请求。调用后会立刻弹窗询问用户是否同意授权小程序使用某项功能或获取用户的某些数据，但不会实际调用对应接口。如果用户之前已经同意授权，则不会出现弹窗，直接返回成功。如果用户之前拒绝了授权，此接口会直接进入失败回调，一般搭配 `uni.getSetting` 和 `uni.openSetting` 使用
+
+```js
+uni.authorize({
+    scope: 'scope.userLocation',
+    success() {
+        uni.getLocation()
+    }
+})
+```
+
+具体详见： [https://uniapp.dcloud.io/api/other/authorize?id=authorize](https://uniapp.dcloud.io/api/other/authorize?id=authorize)
+
+#### 设置
+
+- uni.openSetting(OBJECT)
+
+  调起客户端小程序设置界面，返回用户设置的操作结果
+
+  ```js
+  uni.openSetting({
+      success(res) {
+          console.log(res.authSetting)
+      }
+  })
+  ```
+
+- uni.getSetting(OBJECT)
+
+  获取用户的当前设置
+
+  ```js
+  uni.getSetting({
+      success(res) {
+          console.log(res.authSetting)
+      }
+  })
+  ```
+
+具体详见： [https://uniapp.dcloud.io/api/other/setting?id=opensetting](https://uniapp.dcloud.io/api/other/setting?id=opensetting)
+
+#### 收货地址
+
+uni.chooseAddress(OBJECT)
+
+获取用户收货地址。调起用户编辑收货地址原生界面，并在编辑完成后返回用户选择的地址，需要用户授权 scope.address
+
+```js
+uni.chooseAddress({
+    success(res) {
+        console.log(res.userName)
+        console.log(res.postalCode)
+        console.log(res.provinceName)
+        console.log(res.cityName)
+        console.log(res.countyName)
+        console.log(res.detailInfo)
+        console.log(res.nationalCode)
+        console.log(res.telNumber)
+    }
+})
+```
+
+具体详见： [https://uniapp.dcloud.io/api/other/choose-address](https://uniapp.dcloud.io/api/other/choose-address)
+
+#### 获取发票抬头
+
+uni.chooseInvoiceTitle(OBJECT)
+
+选择用户的发票抬头，需要用户授权 scope.invoiceTitle
+
+在微信小程序中，当前当前小程序必须关联一个公众号，且这个公众号是完成了[微信认证](https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1496554031_RD4xe)的，才能调用 chooseInvoiceTitle。
+
+```js
+uni.chooseInvoiceTitle({
+    success(res) {
+        console.log(res.type);
+        console.log(res.title);
+        console.log(res.taxNumber);
+        console.log(res.companyAddress);
+        console.log(res.telephone);
+        console.log(res.bankName);
+        console.log(res.bankAccount);
+  }
+})
+```
+
+具体详见： [https://uniapp.dcloud.io/api/other/invoice-title](https://uniapp.dcloud.io/api/other/invoice-title)
+
+#### 小程序跳转
+
+- uni.navigateToMiniProgram(OBJECT)
+
+  打开另一个小程序
+
+  ```js
+  uni.navigateToMiniProgram({
+      appId: '',
+      path: 'pages/index/index?id=123',
+      extraData: {
+          'datal': 'test'
+      },
+      success(res) {
+          // 打开成功
+      }
+  })
+  ```
+
+- uni.navigateBackMiniProgram(OBJECT)
+
+  跳转回上一个小程序，只有当另一个小程序跳转到当前小程序时才会能调用成功
+
+  ```js
+  uni.navigateBackMiniProgram({
+      extraData: {
+          'datal': 'test'
+      },
+      success(res) {
+          // 返回成功
+      }
+  })
+  ```
+
+具体详见： [https://uniapp.dcloud.io/api/other/open-miniprogram?id=navigatetominiprogram](https://uniapp.dcloud.io/api/other/open-miniprogram?id=navigatetominiprogram)
+
+#### 账号信息
+
+uni.getAccountInfoSync()
+
+获取当前账号信息，可以返回小程序的Appid。如果使用了微信小程序的云端插件，还可以反馈插件的id和版本
+
+```js
+const accountInfo = uni.getAccountInfoSync()
+console.log(accountInfo.miniProgram.appId)	// 小程序 appId
+console.log(accountInfo.plugin.appId)	// 插件 appId
+console.log(accountInfo.plugin.version)	// 插件版本号, 'a.b.c' 这样的形式
+```
+
+具体详见： [https://uniapp.dcloud.io/api/other/getAccountInfoSync](https://uniapp.dcloud.io/api/other/getAccountInfoSync)
+
+#### 运动(计步器)
+
+sport 运动
+
+此功能为计步器，用于获取手机用户的运动步数。
+
+各平台开发方式暂未统一，使用时需注意用[条件编译](https://uniapp.dcloud.io/platform)调用不同平台的代码。
+
+- App 平台：需使用原生插件，详见[计步器插件](https://ext.dcloud.net.cn/search?q=计步器)
+- 微信小程序平台：[规范详情](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/werun/wx.getWeRunData.html)
+- 支付宝小程序平台：[规范详情](https://docs.alipay.com/mini/api/gxuu7v)
+
+#### 统计
+
+uni.report( eventName , options )
+
+```js
+// 内容统计
+// 当 eventName 为 title 时, options 只能为 String 类型
+uni.report('title', '首页')
+
+// 登录
+uni.report('login', {
+    'name': 'uni-app',
+    'age': '21',
+    // ...
+})
+
+// 分享
+uni.report('share', '分享')
+
+// 支付成功
+uni.report('pay_success', '支付成功')
+// or
+uni.report('pay_success', {
+    '订单金额': '20元',
+    '订单名称': '鼠标',
+    // ...
+})
+
+// 支付失败
+uni.report('pay_fail', '支付失败')
+// or
+uni.report('pay_fail', {
+    '订单金额': '20元',
+    '订单名称': '鼠标'
+    // ...
+})
+
+// 注册
+uni.report('register', {
+    'name': 'uni-app',
+    'age': '21',
+    // ...
+})
+
+// 搜索
+uni.report('search', '搜索内容')
+// or
+uni.report('search', {
+    '内容': '搜索内容'
+})
+```
+
+具体详见： [https://uniapp.dcloud.io/api/other/report](https://uniapp.dcloud.io/api/other/report)
+
+#### 卡卷
+
+仅微信小程序、支付宝小程序支持，各平台开发方式暂未统一，使用时需注意用[条件编译](https://uniapp.dcloud.io/platform)调用不同平台的代码。
+
+- 微信小程序：[规范详情](https://developers.weixin.qq.com/miniprogram/dev/api/wx.openCard.html)
+- 支付宝小程序：[规范详情](https://docs.alipay.com/mini/api/card-voucher-ticket)
+
+#### 模板消息
+
+- addTemplate
+
+  组合模板并添加至账号下的个人模板库
+
+- deleteTemplate
+
+  删除账号下的某个模板
+
+- getTemplateLibraryById
+
+  获取模板库中某个模板标题下关键词库
+
+- getTemplateLibraryList
+
+  获取APP模板库标题列表
+
+- getTemplateList
+
+  获取账号下已存在的模板列表
+
+- sendTemplateMessage
+
+  发送模板消息
+
+- alipay.open.app.mini.templatemessage.send
+
+  小程序通过 openapi 给用户触达消息，主要为支付后的触达（通过消费id）和用户提交表单后的触达（通过formId）
+
+具体详见： [https://uniapp.dcloud.io/api/other/template](https://uniapp.dcloud.io/api/other/template)
+
+#### 订阅消息
+
+uni.requestSubscribeMessage(Object object)
+
+```js
+uni.requestSubscribeMessage({
+    tmplIds: [''],
+    success(res) { }
+})
+```
+
+具体详见： [https://uniapp.dcloud.io/api/other/requestSubscribeMessage](https://uniapp.dcloud.io/api/other/requestSubscribeMessage)
+
+#### 小程序更新
+
+uni.getUpdateManager()
+
+本API返回**全局唯一**的版本更新管理器对象： updateManager，用于管理小程序更新
+
+```js
+const updateManager = uni.getUpdateManager()
+
+updateManager.onCheckForUpdate(function(res) {
+    // 请求完整版本信息的回调
+    console.log(res.hasUpdate)
+})
+
+updateManager.onUpdateReady(function(res) {
+    uni.showModal({
+        title: '更新提示'，
+        content: '新版本已经准备好，是否重启应用？',
+        success(res) {
+        	if(res.confirm) {
+                // 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
+                updateManager.applyUpdate()
+            }
+    	}
+    })
+})
+
+updateManager.onUpdateFailed(function(res) {
+    // 新的版本下载失败
+})
+```
+
+具体详见： [https://uniapp.dcloud.io/api/other/update?id=getupdatemanager](https://uniapp.dcloud.io/api/other/update?id=getupdatemanager)
+
+#### 调试
+
+uni.setEnableDebug(OBJECT)
+
+设置是否打开开关。此开关对应正式版也能生效
+
+```js
+// 打开调试
+uni.setEnableDebug({
+    enableDebug: true
+})
+// 关闭调试
+uni.setEnableDebug({
+    enableDebug: false
+})
+```
+
+具体详见： [https://uniapp.dcloud.io/api/other/set-enable-debug?id=setenabledebug](https://uniapp.dcloud.io/api/other/set-enable-debug?id=setenabledebug)
+
+#### 获取第三方平台数据
+
+- uni.getExtConfig(OBJECT)
+
+  获取第三方平台自定义的数据字段
+
+  ```js
+  if(uni.getExtConfig) {
+      uni.getExtConfig({
+          success(res) {
+              console.log(res.extConfig)
+          }
+      })
+  }
+  ```
+
+- uni.getExtConfigSync
+
+  `uni.getExtConfig` 的同步版本
+
+  ```js
+  const extConfig = uni.getExtConfigSync ? uni.getExtConfigSync() : {}
+  console.log(extConfig)
+  ```
+
+具体详见： [https://uniapp.dcloud.io/api/other/get-extconfig?id=getextconfig](https://uniapp.dcloud.io/api/other/get-extconfig?id=getextconfig)
+
