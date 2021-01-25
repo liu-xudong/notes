@@ -648,6 +648,8 @@ try {
   })
   ```
 
+  注意： 使用时需要配置 **manifest.json** 文件中的微信小程序配置中勾选位置接口选项并填写描述，描述为界面显示内容。
+
 - uni.chooseLocation(OBJECT)
 
   打开地图选择位置。
@@ -762,7 +764,7 @@ uni.getLocation({
   ```js
   uni.chooseImage({
       count: 1,
-      courceType: ['album'],
+      sourceType: ['album'],
       success: function(res) {
           uni.getImageInfo({
               src: res.tempFilePaths[0],
@@ -921,6 +923,8 @@ bgAudioManager.src = 'https://img-cdn-qiniu.dcloud.net.cn/uniapp/audio/music.mp3
 具体详见： [https://uniapp.dcloud.io/api/media/background-audio-manager?id=getbackgroundaudiomanager](https://uniapp.dcloud.io/api/media/background-audio-manager?id=getbackgroundaudiomanager)
 
 #### 音频组件控制
+
+uni.createInnerAudioContext()
 
 创建并返回内部 audio 上下文 `innerAudioContext` 对象。
 
