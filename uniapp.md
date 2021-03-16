@@ -1033,7 +1033,7 @@ innerAudioContext.onError((res) => {
                           success: function() {
                               console.log('save success')
                           }
-                      })
+                       })
                   }
               })
           }
@@ -1043,7 +1043,7 @@ innerAudioContext.onError((res) => {
 
 - uni.getVideoInfo(OBJECT)
 
-  获取视频详情信
+  获取视频详情信息
 
 - uni.compressVideo(OBJECT)
 
@@ -1197,7 +1197,7 @@ export default {
 
 - editorContext.insertText(OBJECT)
 
-  覆盖当前选取，设置一段文本
+  覆盖当前选区，设置一段文本
 
 - editorContext.setContents(OBJECT)
 
