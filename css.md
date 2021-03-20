@@ -33,3 +33,27 @@
 }
 ```
 
+### 屏幕适配
+
+```html
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            width: 70%;
+        }
+        @media (max-width: 500px) {
+            h1 {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+```
+
