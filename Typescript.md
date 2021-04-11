@@ -608,11 +608,11 @@ kitty.numLives--
 
 所有变量除了你计划去修改的都应该使用 `const` 。基本原则就是如果一个变量不需要对它写入，那么其它使用这些代码的人都不能够写入它们，并且要思考为什么会需要对这些变量重新赋值。使用 `const` 也可以让我们更容易的推测数据的流动。
 
-### 解构
+#### 解构
 
 Another Typescript已经可以解析其他 ECMAscript 2015 特性了。
 
-#### 解构数组
+##### 解构数组
 
 最简单的解构莫过于数组的结构赋值了：
 
@@ -637,19 +637,168 @@ second = input[1]
 [first, second] = [second, first] 
 ```
 
+作用于函数参数：
 
+```typescript
+function f([first, second]: [number, number]) {
+    console.log(first)
+    console.log(second)
+}
+f(input)
+```
 
-#### 对象结构
+你可以在数组里使用 `...` 语法创建剩余变量：
 
-#### 属性重命名
+ ```typescript
+let [first, ...rest] = [1, 2, 3, 4]
+console.log(first)	// outputs 1
+console.log(rest)	// outputs [2, 3, 4]
+ ```
 
-#### 默认值
+当然，由于是JavaScript， 你可以忽略你不关心的尾随元素：
 
-#### 函数声明
+```typescript
+let [first] = [1, 2, 3, 4]
+console.log(first)	// outputs 1
+```
 
-#### 展开
+或其它元素：
 
+```typescript
+let [, second, , fourth] = [1, 2, 3, 4]
+```
 
+##### 对象结构
+
+你也可以结构对象：
+
+```typescript
+let o = {
+    a: "foo",
+    b: 12,
+    c: "bar"
+}
+let { a, b } = o
+```
+
+这通过 `o.a` and `o.b` 创建了 `a` 和`b` 。注意，如果你不需要 `c` 你可以忽略它。
+
+就像数组结构，你可以用没有声明的赋值：
+
+```typescript
+({ a, b } = { a: "baz", b: 101 })
+```
+
+注意，我们需要用括号将他括起来，因为 JavaScript 通常会以 `{` 起始的语句解析为一个块
+
+你可以在对象里使用 `...` 语法创建剩余变量：
+
+```typescript
+let { a, ...passthrough } = o
+let total = passthrough.b + passthrough.c.length
+```
+
+##### 属性重命名
+
+你也可以给属性以不同的名字：
+
+```typescript
+let { a: newName1, b: newName2 } = o
+```
+
+这里的语法开始变得混乱。你可以将 `a: newName1` 读作 “`a`  作为 `newName1` ”。方向是从左到右，好像你写成了以下样子：
+
+```typescript
+let newName1 = o.a
+let newName2 = o.b
+```
+
+令人困惑的是，这里的冒号不是指示类型的。如果你想指定它的类型，仍然需要在其后写上完整的模式。
+
+```typescript
+let {a, b}: {a: string, b: string} = o
+```
+
+##### 默认值
+
+默认值可以让你在属性为 `undefined` 时使用缺省值：
+
+```typescript
+function keepWholeObject(wholeObject: { a: string, b?: number }) {
+    let { a, b = 1001 } = wholeObject
+}
+```
+
+现在，即使 `b` 为 `undefined` , `keepWholeObject` 函数的变量 `wholeObject` 的属性 `a`  和`b` 都会有值。
+
+##### 函数声明
+
+解构也能用于函数声明。看以下简单的情况：
+
+```typescript
+type c = { a: string, b?: number }
+function f({ a, b }: c): void {
+    // ...
+}
+```
+
+但是，通常情况下更多的是指默认值，结构默认值有些棘手。首先，你需要在默认值之前设置其格式。
+
+```typescript
+function f( { a="", b=0 } = { a: "" }): void {
+    // ...
+}
+f({ a: "yes" })	// ok, default b = 0
+f()		// ok, default to {a: ""}, which then defaults b = 0
+f({}) 	// error, 'a' is required if you supply an argument
+```
+
+要小心使用解构。从前面的例子中可以看出，就算是最简单的解构表达式也是难以理解的。尤其当存在深层嵌套解构的时候，就算这时没有堆叠在一起的重命名，默认值和类型注解，也是令人难以理解。解构表达式要尽量保持小而简单。你自己也可以直接使用解构将会生成的赋值表达式。
+
+##### 展开
+
+展开操作符正与解构相反。它允许你将一个数组展开为另一个数组，或将一个对象展开为另一个对象。例如：
+
+```typescript
+let first = [1, 2]
+let second = [3, 4]
+let bothPlus = [0, ...first, ...second, 5]
+```
+
+这会令 `bothPlus` 的值为 `[0, 1, 2, 3, 4, 5]` 。展开操作创建 `first` 和 `second` 的一份浅拷贝。它们不会被展开操作所改变。
+
+你还可以展开对象：
+
+```typescript
+let defaults = { food: "spicy", price: "$$", ambiance: "noisy" }
+let search = { ...defaults, food: "rich" }
+```
+
+`search` 的值为 `{ food: "rich", price: "$$", ambiance: "noisy" }` 。对象的展开比数组的展开要复杂的多。像数组展开一样，它是从左至右进行处理，但结果仍为对象。这意味着出现在展开对象后面的属性会覆盖前面的属性。因此，如果我们修改上面的例子，在结尾处进行展开的话：
+
+```typescript
+let defaults = { food: "spicy", price: "$$", ambiance: "noisy" }
+let search = { food: "rich", ...defaults}
+```
+
+那么，`defaults` 里的 `food` 属性会重写 `food: "rich"` ，在这里这并不是我们想要的结果。
+
+对象展开还有其他一些意想不到的限制。首先，它仅包含对象 <font color=blue>自身的可枚举属性</font>。大体上是说当你展开一个对象实例时，你会丢失其它方法：
+
+```typescript
+class C {
+    p = 12
+    m() {
+        
+    }
+}
+let c = new	C()
+let clone = [ ...c ]
+clone.p	// ok
+clone.m()	// error!
+```
+
+其次，TypeScript 编译器不允许展开泛型函数上的类型参数。这个特性会在TypeScript的未来版本中考虑实现。
 
 
 
