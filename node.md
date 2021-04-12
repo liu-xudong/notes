@@ -239,5 +239,103 @@ module.exports = {
 
 ### webSocket
 
+socket服务端
+
+```js
+// socketServer.js	后端页面
+const WebSocket = require('ws');
+
+const wss = new WebSocket.Server({ port: 8080 });
+
+wss.on('connection', function connection(ws) {
+  ws.on('message', function incoming(data) {
+      wss.clients.forEach(function each(client) {
+          // 公共聊天室
+          client.send(data);
+          // 一对一聊天
+    //   if (client !== ws && client.readyState === WebSocket.OPEN) {
+    //     client.send(data);
+    //   }
+    });
+  });
+});
+```
+
+socket客户端
+
+```js
+// webSocket.js	前端页面
+const ws = new WebSocket('ws://localhost:8080/')	// 使用时浏览器必须支持HTML5
+
+ws.onopen = () => {
+    ws.send('hello server.')
+}
+
+ws.onmessage = (event) => {
+    console.log(event);
+    let data = event.data
+    content.innerHTML += data + '<br/>'
+}
+
+ws.onerror = (err) => {
+    ws.send(err)
+}
+
+ws.onclose = () => {
+    console.log('连接已关闭');
+}
+```
+
+界面展示
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./webSocket.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        #content {
+            width: 80%;
+            height: 30vh;
+            margin: 10px auto;
+            border: 1px solid #ff6666;
+            border-radius: 5px;
+        }
+
+        .box {
+            width: 80%;
+            margin: 15px auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="content"></div>
+    <div class="box">
+        <input type="text" id="input">
+        <button id="bt">send</button>
+    </div>
+    <script>
+        let content = document.getElementById('content')
+        let input = document.getElementById('input')
+        let bt = document.getElementById('bt')
+
+        bt.addEventListener('click',function() {
+            ws.send(input.value)
+            input.value = ''
+        },false)
+    </script>
+</body>
+</html>
+```
+
 
 
