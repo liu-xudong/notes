@@ -118,6 +118,25 @@
   | :----- | :------: | -----: |
   | 左对齐 | 居中对齐 | 右对齐 |
 
+- 合并单元格用法（markdown支持html语法）
+
+  <table>
+      <tr>
+          <th colspan="4">表头</th>
+      </tr>
+      <tr>
+          <td rowspan="2">内容1</td>
+          <td>内容2</td>
+          <td>内容3</td>
+          <td>内容4</td>
+      </tr>
+      <tr>
+          <td>内容2</td>
+          <td>内容3</td>
+          <td>内容4</td>
+      </tr>
+  </table>
+
 ## markdown在Google上的展示插件
 
 ***Markdown Preview Plus***
