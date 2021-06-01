@@ -678,6 +678,7 @@ let option = {
     选中偏移量 `selectedOffset: 30`
 
 - 饼图的特点
+  
   + 饼图可以很好的帮助用户快速了解不同分类的数据的<font color="ff6666">占比情况</font>
 
 ```html
@@ -743,3 +744,392 @@ let option = {
 
 #### 5.地图
 
+地图图表的使用方式
+
+- 百度地图 `API`
+
+  需要申请百度地图`ak`
+
+- 矢量地图
+
+  需要准备矢量地图数据
+
+常用配置
+
+- 缩放拖动： `roam`                           
+- 名称显示： `label`
+- 初始缩放比例： `zoom`
+- 地图中心点： `center`
+
+常见效果
+
+- 显示某个区域：同地图的渲染方式渲染区域地图
+- 不同城市颜色不同
+  1. 显示基本的中国地图
+  2. 城市的空气质量数据设置给 `series`
+  3. 将 `series` 下的数据和 `geo` 关联起来
+  4. 结合 `visualMap` 配合使用
+
+- 地图和散点图结合
+
+  1. 给 `series` 下增加新的对象
+
+  2. 准备好散点数据，设置给新对象的 `data`
+
+  3. 配置新对象的 `type` 
+
+     ```json
+     type: effectScatter
+     ```
+
+  4. 让散点图使用地图坐标系统
+
+     ```json
+     coordinateSystem: 'geo'
+     ```
+
+  5. 让涟漪的效果更加明显
+
+     ```json
+     rippleEffect: {
+         scale: 10
+     }
+     ```
+
+地图特点
+
+- 地图主要可以帮助我们从宏观的角度快速看出不同<font color="#f66">地理位置</font>上数据的差异
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地图的实现</title>
+    <script src="./lib/echarts.min.js"></script>
+    <script src="./map/china.js"></script>
+</head>
+<body>
+    <div style="width: 600px; height: 400px; margin: 100px auto;"></div>
+
+    <script>
+        // 1. ECharts 最基本的代码结构
+        // 2. 准备中国地图的矢量数据
+        // 3. 使用 Ajax 获取矢量地图数据
+        // 4. 在 Ajax 的回调中注册地图矢量数据 echarts.registerMap('chinaMap', 矢量地图数据)
+        // 5. 配置 geo 的 type 为 'map',map 为 'chinaMap'
+        const airData = [
+            { name: '北京', value: 39.92 },
+            { name: '天津', value: 39.13 },
+            { name: '上海', value: 31.22 },
+            { name: '重庆', value: 66 },
+            { name: '河北', value: 147 },
+            { name: '河南', value: 113 },
+            { name: '云南', value: 25.04 },
+            { name: '辽宁', value: 50 },
+            { name: '黑龙江', value: 114 },
+            { name: '湖南', value: 175 },
+            { name: '安徽', value: 117 },
+            { name: '山东', value: 92 },
+            { name: '新疆', value: 84 },
+            { name: '江苏', value: 67 },
+            { name: '浙江', value: 84 },
+            { name: '江西', value: 96 },
+            { name: '湖北', value: 273 },
+            { name: '广西', value: 59 },
+            { name: '甘肃', value: 99 },
+            { name: '山西', value: 39 },
+            { name: '内蒙古', value: 58 },
+            { name: '陕西', value: 61 },
+            { name: '吉林', value: 51 },
+            { name: '福建', value: 29 },
+            { name: '贵州', value: 71 },
+            { name: '广东', value: 38 },
+            { name: '青海', value: 57 },
+            { name: '西藏', value: 24 },
+            { name: '四川', value: 58 },
+            { name: '宁夏', value: 52 },
+            { name: '海南', value: 54 },
+            { name: '台湾', value: 88 },
+            { name: '香港', value: 66 },
+            { name: '澳门', value: 77 },
+            { name: '南海诸岛', value: 55 },
+        ]
+
+        const scatterData = [
+            { value: [117.283042, 31.86119] }
+        ]
+        
+        const myChart = echarts.init(document.querySelector('div'))
+
+        let option = {
+            geo: {
+                type: 'map',
+                map: 'china', 
+                roam: true, // 设置允许缩放以及拖动的效果
+                // label: {
+                //     show: true  // 展示标签
+                // },
+                zoom: 1, // 设置初始化的缩放比例
+                // center: [87.617733,43.792818]   // 设置地图中心点的坐标
+            },
+            series: [
+                {
+                    data: airData,
+                    geoIndex: 0,    // 将空气质量的数据和第0个geo配置关联起来
+                    type: 'map'
+                }, 
+                {
+                    data: scatterData,   // 配置散点的坐标数据
+                    type: 'effectScatter',
+                    coordinateSystem: 'geo', // 指明散点使用的坐标系统   geo的坐标系统
+                    rippleEffect: {
+                        scale: 10   // 设置涟漪动画的缩放比例
+                    }
+                }
+            ],
+            visualMap: {
+                min: 0,
+                max: 300,
+                inRange: {
+                    color: ['white', 'red'] // 控制颜色渐变的范围
+                },
+                calculable: true    // 出现滑块
+            }
+        }
+
+        myChart.setOption(option)
+    </script>
+</body>
+</html>
+```
+
+#### 6.雷达图
+
+- 实现步骤
+  + 定义各个维度的最大值
+  + 定义图表的类型 `radar`
+
+- 常用配置
+  + 显示数值：`label`
+  + 区域面积： `areaStyle`
+  + 绘制类型： `shape`
+
+- 雷达图的特点
+  - 雷达图可以用来分析多个维度的数据与标准数据的对比情况
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>雷达图的实现</title>
+    <script src="./lib/echarts.min.js"></script>
+</head>
+<body>
+    <div style="width: 600px; height: 400px;"></div>
+    <script>
+        const myChart = echarts.init(document.querySelector('div'))
+
+        // 各个维度的最大值
+        const dataMax = [{
+            name: '易用性',
+            max: 100
+        },{
+            name: '功能',
+            max: 100
+        },{
+            name: '拍照',
+            max: 100
+        },{
+            name: '跑分',
+            max: 100
+        },{
+            name: '续航',
+            max: 100
+        }]
+
+        let option = {
+            radar: {    // 配置各个维度的最大值
+                indicator: dataMax,
+                shape: 'polygon'    // 配置雷达图最外层的图形 circle palygon
+            },
+            series: [{
+                type: 'radar',  // radar 此图表是一个雷达图
+                label: {    // 设置标签的样式
+                    show: true  // 显示数值
+                },
+                areaStyle: {},  //  将每一个产品的雷达图形成阴影的面积
+                data: [{
+                    name: '华为手机1',
+                    value: [80, 90, 80, 82, 90]
+                },{
+                    name: '中兴手机1',
+                    value: [70, 82, 75, 70, 78]
+                }]
+            }]
+        }
+
+        myChart.setOption(option)
+    </script>
+</body>
+</html>
+```
+
+#### 7.仪表盘
+
+- 仪表盘的实现步骤
+  + 准备数据
+  + 定义图表的类型 `gauge`
+
+- 常见效果
+  + 数值范围： `max,min`
+  + 多个指针： 增加 `data` 中的数组元素
+  + 多个指针颜色差异： `itemStyle`
+
+- 仪表盘的特点
+  - 仪表盘可以更直观的表现出某个指标的<font color="#f66">进度</font>或实际情况
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仪表盘的实现</title>
+    <script src="./lib/echarts.min.js"></script>
+</head>
+<body>
+    <div style="width: 600px; height: 400px;"></div>
+    <script>
+        const myChart = echarts.init(document.querySelector('div'))
+
+        let option = {
+            series: [{
+                type: 'gauge',
+                data: [{
+                    value: 97,
+                    itemStyle: {    // 指针样式
+                        color: 'red'    // 指针颜色
+                    }
+                },{
+                    value: 85,
+                    itemStyle: {
+                        color: 'blue'
+                    }
+                }],  // 每一个对象就代表一个指针
+                min: 50,    // min max 控制仪表盘的数值范围
+                max: 101
+            }]
+        }
+
+        myChart.setOption(option)
+    </script>
+</body>
+</html>
+```
+
+### 主题
+
+- 内置主题
+
+  + `ECharts` 中默认内置了两套主题： `light dark`
+
+  + 在初始化对象方法 `init` 中可以指明
+
+    ```js
+    const chart = echarts.init(dom,'light')
+    const chart = echarts.init(dom, 'dark')
+    ```
+
+- 自定义主题
+  1. 在主题编辑器中 [<font color=#f99>编辑主题</font>](https://echarts.apache.org/zh/theme-builder.html)
+  2. 下载主题，是一个 `js` 文件
+  3. 引入主题 `js` 文件
+  4. 在 `init` 方法中使用主体
+
+### 调色盘
+
+它是一组颜色，图形、系列会自动从其中选择颜色。(调色盘的作用遵循就近原则)
+
+- 主题调色盘
+
+- 全局调色盘
+
+  ```json
+  option: {
+      color: ['red','green','blue']
+  }
+  ```
+
+- 局部调色盘
+
+  ```json
+  series: [{
+      type: 'bar',
+      color: ['red','green','blue']
+  }]
+  ```
+
+颜色渐变
+
+- 线性渐变
+
+  ```json
+  color: {
+      type: 'linear',
+      x: 0,
+      y: 0,
+      x2: 0,
+      y2: 1,
+      colorStops: [{
+          offset: 0,color: 'red'	// 0% 处的颜色
+      },{
+        offset: 1, color: 'blue'	// 100% 处的颜色  
+      }],
+      globalCoord: false	// 缺省为 false
+  }
+  ```
+
+- 径向渐变
+
+  ```json
+  color: {
+      type: 'radial',
+      x: 0.5,
+      y: 0.5,
+      r: 0.5,
+      colorStops: [{
+          offset: 0, color: 'red'	// 0% 处的颜色
+      }, {
+          offset: 1, color: 'blue'	// 100% 处的颜色
+      }],
+      global: false	// 缺省为 false
+  }
+  ```
+
+### 样式
+
+- 直接样式： `itemStyle、textStyle、lineStyle、areaStyle、label`
+- 高亮样式： 在 `emphasis` 中包裹 `itemStyle、textStyle、lineStyle、areaStyle、label`
+
+### 自适应
+
+当浏览器的大小发生变化的时候，如果想让图表也能随之适配变化
+
+1. 监听窗口大小变化事件
+
+2. 在事件处理函数中调用 `ECharts` 实例对象的 `resize` 即可
+
+   ```js
+   window.onresize = funciton() {
+       myChart.resize()
+   }
+   ```
+
+   
