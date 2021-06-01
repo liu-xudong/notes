@@ -6,7 +6,7 @@
 
 ### 安装
 
-> `ChineseLoremlpsum` ： 中文插件
+> `ChineseLocalizations` ： 中文插件
 >
 > `Anaconda` ： 自动匹配关键字等使用功能，有效提高开发效率
 >
